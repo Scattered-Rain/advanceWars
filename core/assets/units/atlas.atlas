@@ -1,47 +1,12 @@
 
 atlas.png
-size: 128,32
+size: 32,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 city
   rotate: false
-  xy: 20, 3
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-forest
-  rotate: false
-  xy: 38, 3
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-hill
-  rotate: false
-  xy: 56, 3
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-plains
-  rotate: false
-  xy: 74, 3
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-road
-  rotate: false
   xy: 2, 2
-  size: 16, 17
-  orig: 16, 17
-  offset: 0, 0
-  index: -1
-sea
-  rotate: false
-  xy: 92, 3
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

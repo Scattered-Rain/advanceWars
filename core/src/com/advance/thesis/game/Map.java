@@ -14,20 +14,20 @@ public class Map {
 	@Getter private int height;
 	
 	/** Holds the terrain info of the map */
-	private Terrain[][] terrain;
+	private TerrainContainer[][] terrain;
 	/** Holds the unit info of the map */
-	private UnitBox[][] units;
+	private UnitContainer[][] units;
 	
 	
 	/** Constructs new Map based on raw values (for cloning) */
-	private Map(int width, int height, Terrain[][] terrain, UnitBox[][] units){
+	private Map(int width, int height, TerrainContainer[][] terrain, UnitContainer[][] units){
 		this.width = width;
 		this.height = height;
-		this.terrain = new Terrain[height][width];
-		this.units = new UnitBox[height][width];
+		this.terrain = new TerrainContainer[height][width];
+		this.units = new UnitContainer[height][width];
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
-				this.terrain[cy][cx] = terrain[cy][cx];
+				this.terrain[cy][cx] = terrain[cy][cx].clone();
 				this.units[cy][cx] = units[cy][cx].clone();
 			}
 		}
@@ -38,11 +38,12 @@ public class Map {
 	private void setMap(int width, int height){
 		this.width = width;
 		this.height = height;
-		this.terrain = new Terrain[height][width];
-		this.units = new UnitBox[height][width];
+		this.terrain = new TerrainContainer[height][width];
+		this.units = new UnitContainer[height][width];
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
-				units[cy][cx] = new UnitBox(Unit.NONE, Player.NONE, -1);
+				units[cy][cx] = new UnitContainer(Unit.NONE, Player.NONE, -1);
+				terrain[cy][cx] = new TerrainContainer(Terrain.PLAIN, Player.NONE);
 			}
 		}
 	}
@@ -55,16 +56,38 @@ public class Map {
 	
 	//Inner Classes-----
 	@AllArgsConstructor
+	/** Inner class for simplifying storage of terrains on the map */
+	private static class TerrainContainer{
+		
+		@Getter private Terrain type;
+		@Getter private Player owner;
+		
+		
+		/** Creates default Terrain without any owner */
+		public TerrainContainer(Terrain type){
+			this.type = type;
+			this.owner = Player.NONE;
+		}
+		
+		
+		/** Returns a deep clone of this object */
+		public TerrainContainer clone(){
+			return new TerrainContainer(type, owner);
+		}
+	}
+	
+	
+	@AllArgsConstructor
 	/** Inner class for simplifying storage of active units on the map */
-	private static class UnitBox{
+	private static class UnitContainer{
 		
 		@Getter private Unit type;
-		@Getter private Player player;
+		@Getter private Player owner;
 		@Getter private int hp;
 		
 		/** Returns a deep clone of this object */
-		public UnitBox clone(){
-			return new UnitBox(type, player, hp);
+		public UnitContainer clone(){
+			return new UnitContainer(type, owner, hp);
 		}
 	}
 	

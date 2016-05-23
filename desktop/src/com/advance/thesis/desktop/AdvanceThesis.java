@@ -7,8 +7,14 @@ import com.advance.thesis.Main;
 public class AdvanceThesis {
 	
 	public static void main (String[] arg) {
+		pack();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new Main(), config);
+	}
+	
+	private static void pack(){
+		Autopacker.packFolder("terrain", "terrain", "atlas");
+		Autopacker.packFolder("units", "units", "atlas");
 	}
 	
 }

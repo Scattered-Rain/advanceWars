@@ -9,12 +9,16 @@ public class AdvanceThesis {
 	public static void main (String[] arg) {
 		pack();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.resizable = false;
+		config.title = "Advance Thesis";
+		config.fullscreen = false;
+		config.width = config.getDesktopDisplayMode().width/2;
+		config.height = config.getDesktopDisplayMode().height/2;
 		new LwjglApplication(new Main(), config);
 	}
 	
 	private static void pack(){
-		Autopacker.packFolder("terrain", "terrain", "atlas");
-		Autopacker.packFolder("units", "units", "atlas");
+		Autopacker.packFolder("map", "map", "atlas");
 	}
 	
 }

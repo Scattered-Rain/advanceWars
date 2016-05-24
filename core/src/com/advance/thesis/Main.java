@@ -2,6 +2,10 @@ package com.advance.thesis;
 
 import lombok.Data;
 
+import com.advance.thesis.game.GameConstants;
+import com.advance.thesis.game.Map;
+import com.advance.thesis.game.enums.Terrain;
+import com.advance.thesis.game.mapRenderer.MapRenderer;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,7 +20,8 @@ public class Main extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
-		System.out.println("Hello World: "+this.getImg());
+		System.out.println(GameConstants.atlas.findRegion(Terrain.FOREST.getImgName()));
+		
 	}
 
 	@Override

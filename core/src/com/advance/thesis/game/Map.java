@@ -19,6 +19,11 @@ public class Map {
 	private UnitContainer[][] units;
 	
 	
+	/** Constructs Default, empty map of given dimensions */
+	public Map(int width, int height){
+		setMap(width, height);
+	}
+	
 	/** Constructs new Map based on raw values (for cloning) */
 	private Map(int width, int height, TerrainContainer[][] terrain, UnitContainer[][] units){
 		this.width = width;
@@ -52,6 +57,19 @@ public class Map {
 	public Map clone(){
 		return new Map(width, height, terrain, units);
 	}
+	
+	/** Returns Terrain Type at x|y */
+	public Terrain getTerrain(int x, int y){
+		return this.terrain[y][x].getType();
+	}
+	
+	/** Returns Unit Type at x|y */
+	public Unit getUnit(int x, int y){
+		return  this.units[y][x].getType();
+	}
+	
+	
+	
 	
 	
 	//Inner Classes-----

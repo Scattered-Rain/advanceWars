@@ -1,6 +1,6 @@
 
 atlas.png
-size: 128,32
+size: 256,32
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -42,6 +42,41 @@ tRoad
 tSea
   rotate: false
   xy: 92, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+uArtillery
+  rotate: false
+  xy: 110, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+uInfantry
+  rotate: false
+  xy: 128, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+uMechInfantry
+  rotate: false
+  xy: 146, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+uMedTank
+  rotate: false
+  xy: 164, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+uTank
+  rotate: false
+  xy: 182, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

@@ -1,8 +1,8 @@
 package com.advance.thesis.game.mapRenderer;
 
 import com.advance.thesis.game.GameConstants;
-import com.advance.thesis.game.Map;
 import com.advance.thesis.game.enums.Terrain;
+import com.advance.thesis.game.logic.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;

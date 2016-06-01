@@ -3,8 +3,9 @@ package com.advance.thesis;
 import lombok.Data;
 
 import com.advance.thesis.game.GameConstants;
-import com.advance.thesis.game.Map;
 import com.advance.thesis.game.enums.Terrain;
+import com.advance.thesis.game.logic.Map;
+import com.advance.thesis.game.logic.MapController;
 import com.advance.thesis.game.mapRenderer.GameRenderer;
 import com.advance.thesis.game.mapRenderer.MapRenderer;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -23,6 +24,7 @@ public class Main extends ApplicationAdapter {
 	@Override public void create () {
 		this.map = new Map(16, 16);
 		this.renderer = new GameRenderer(map);
+		MapController m = new MapController(map);
 	}
 	
 	@Override public void render () {

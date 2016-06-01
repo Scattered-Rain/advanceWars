@@ -1,5 +1,7 @@
 package com.advance.thesis;
 
+import java.util.Random;
+
 import lombok.Data;
 
 import com.advance.thesis.game.GameConstants;
@@ -20,15 +22,28 @@ public class Main extends ApplicationAdapter {
 	private Map map;
 	private MapRenderer renderer;
 	
+	private MapController m;
+	private int[] loc = new int[]{0, 0};
+	
 	
 	@Override public void create () {
 		this.map = new Map(16, 16);
 		this.renderer = new GameRenderer(map);
-		MapController m = new MapController(map);
+		this.m = new MapController(map);
 	}
+	
 	
 	@Override public void render () {
 		renderer.render();
+		Random rand = new Random();
+		int x = rand.nextInt(16);
+		int y = rand.nextInt(16);
+		m.move(loc[0], loc[1], x, y);
+		this.loc[0] = x;
+		this.loc[1] = y;
+		try{
+			Thread.sleep(1000);
+		}catch(Exception ex){}
 	}
 	
 }

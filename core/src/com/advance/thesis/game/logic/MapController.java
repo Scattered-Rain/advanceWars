@@ -11,6 +11,10 @@ public class MapController {
 		this.map = map;
 	}
 	
-	
+	/** Moves unit at origin to target if possible, returns whether movement was successful */
+	public boolean move(int originX, int originY, int targetX, int targetY){
+		map.move(originX, originY, targetX, targetY);
+		return true;
+	}
 	
 }

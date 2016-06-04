@@ -20,6 +20,7 @@ public enum Unit {
 	@Getter private String name;
 	@Getter private String imgName;
 	@Getter private MoveType moveType;
+	//Describes the amount of movement this unit has in one turn
 	@Getter private int speed;
 	
 	/** Returns whether this unit is an actual Unit */

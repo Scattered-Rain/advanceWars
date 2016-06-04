@@ -6,9 +6,12 @@ import lombok.Getter;
 public class RangeCluster {
 	
 	/** The number indicating out of range-ness */
-	public static final int OUT_OF_RANGE = -1;
+	public static final int OUT_OF_RANGE = 0;
 	
 	/** The origin point of the Range Cluster on the map (0|0 for the cluster) */
+	@Getter private Point<Integer> mapLocation;
+	
+	/** Denotes the local origin of the range of this Range Cluster */
 	@Getter private Point<Integer> origin;
 	
 	/** The dimensions of the Range bounding box */
@@ -19,9 +22,16 @@ public class RangeCluster {
 	private int[][] range;
 	
 	
+	private RangeCluster(int[][] range, Point<Integer> mapLocation, Point<Integer> origin){
+		this.mapLocation = mapLocation;
+		this.origin = origin;
+	}
+	
+	
 	/** Clone Constructor */
 	private RangeCluster(RangeCluster toClone){
-		this.origin = toClone.origin.clone();
+		this.mapLocation = toClone.mapLocation;
+		this.origin = toClone.origin;
 		this.width = toClone.width;
 		this.height = toClone.height;
 		this.range = new int[height][width];
@@ -43,7 +53,7 @@ public class RangeCluster {
 	
 	/** Returns whether the global coordinates given are in range */
 	public boolean inRangeGlobal(int x, int y){
-		return inRange(x-origin.getX(), y-origin.getY());
+		return inRange(x-mapLocation.getX(), y-mapLocation.getY());
 	}
 	
 	/** Checks whether the given local coordinates are within the bounding box of the Cluster */

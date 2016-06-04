@@ -3,6 +3,7 @@ package com.advance.thesis.game.logic;
 import com.advance.thesis.game.enums.Player;
 import com.advance.thesis.game.enums.Terrain;
 import com.advance.thesis.game.enums.Unit;
+import com.advance.thesis.util.Point;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,14 +64,29 @@ public class Map {
 		this.units[originY][originX] = NONE_UNIT;
 	}
 	
+	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
+	protected void move(Point<Integer> origin, Point<Integer> target){
+		move(origin.getX(), origin.getY(), target.getX(), target.getY());
+	}
+	
 	/** Returns Terrain Type at x|y */
 	public Terrain getTerrain(int x, int y){
 		return this.terrain[y][x];
 	}
 	
+	/** Returns Terrain Type at given Point */
+	public Terrain getTerrain(Point<Integer> point){
+		return getTerrain(point.getX(), point.getY());
+	}
+	
 	/** Returns Unit Type at x|y */
 	public Unit getUnit(int x, int y){
 		return  this.units[y][x].getType();
+	}
+	
+	/** Returns Unit Type at given Point */
+	public Unit getUnit(Point<Integer> point){
+		return getUnit(point.getX(), point.getY());
 	}
 	
 	/** Returns deep clone of this map */

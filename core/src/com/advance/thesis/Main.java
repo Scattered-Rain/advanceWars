@@ -10,6 +10,9 @@ import com.advance.thesis.game.logic.Map;
 import com.advance.thesis.game.logic.MapController;
 import com.advance.thesis.game.mapRenderer.GameRenderer;
 import com.advance.thesis.game.mapRenderer.MapRenderer;
+import com.advance.thesis.util.Direction;
+import com.advance.thesis.util.Point;
+import com.advance.thesis.util.RangeExpander;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,6 +42,7 @@ public class Main extends ApplicationAdapter {
 		int x = rand.nextInt(16);
 		int y = rand.nextInt(16);
 		m.move(loc[0], loc[1], x, y);
+		RangeExpander.calcMoveRange(map, new Point<Integer>(x, y));
 		this.loc[0] = x;
 		this.loc[1] = y;
 		try{

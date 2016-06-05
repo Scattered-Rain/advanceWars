@@ -37,17 +37,15 @@ public class Main extends ApplicationAdapter {
 	
 	
 	@Override public void render () {
-		renderer.render();
 		Random rand = new Random();
 		int x = rand.nextInt(16);
 		int y = rand.nextInt(16);
 		m.move(loc[0], loc[1], x, y);
-		RangeExpander.calcMoveRange(map, new Point<Integer>(x, y));
 		this.loc[0] = x;
 		this.loc[1] = y;
-		try{
-			Thread.sleep(1000);
-		}catch(Exception ex){}
+		System.out.println(map.getUnit(x, y).getName());
+		System.out.println(RangeExpander.calcMoveRange(map, new Point<Integer>(x, y)));
+		renderer.render();
 	}
 	
 }

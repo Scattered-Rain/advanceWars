@@ -3,14 +3,15 @@ package com.advance.thesis.util;
 public class Array2dPrinter {
 	
 	/** Prints given 2d Array to console */
-	public static void printIntArray(int[][] array){
+	public static String printIntArray(int[][] array){
+		StringBuffer buffer = new StringBuffer();
 		for(int cy=0; cy<array.length; cy++){
 			for(int cx=0; cx<array[0].length; cx++){
-				System.out.print(array[cy][cx]+"\t");
+				buffer.append(array[cy][cx]+"\t");
 			}
-			System.out.println("");
+			buffer.append("\n");
 		}
-		System.out.println();
+		return buffer.toString();
 	}
 	
 }

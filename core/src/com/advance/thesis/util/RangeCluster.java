@@ -6,7 +6,7 @@ import lombok.Getter;
 public class RangeCluster {
 	
 	/** The number indicating out of range-ness */
-	public static final int OUT_OF_RANGE = 0;
+	public static final int OUT_OF_RANGE = -1;
 	
 	/** The origin point of the Range Cluster on the map (0|0 for the cluster) */
 	@Getter private Point<Integer> mapLocation;
@@ -22,9 +22,12 @@ public class RangeCluster {
 	private int[][] range;
 	
 	
-	private RangeCluster(int[][] range, Point<Integer> mapLocation, Point<Integer> origin){
+	protected RangeCluster(int[][] range, Point<Integer> mapLocation, Point<Integer> origin){
 		this.mapLocation = mapLocation;
 		this.origin = origin;
+		this.range = range;
+		this.height = range.length;
+		this.width = range[0].length;
 	}
 	
 	
@@ -64,6 +67,19 @@ public class RangeCluster {
 	/** Returns deep clone of this Range Cluster */
 	public RangeCluster clone(){
 		return new RangeCluster(this);
+	}
+	
+	/** Returns String representing this RangeCluster */
+	public String toString(){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Center of range on Map: "+new Point<Integer>(this.mapLocation.getX()+this.origin.getX(), this.mapLocation.getY()+this.origin.getY()));
+		buffer.append("\n");
+		buffer.append("Origin of RangeCluster on Map: "+this.mapLocation);
+		buffer.append("\n");
+		buffer.append("Center of range in RangeCluster: "+this.origin);
+		buffer.append("\n");
+		buffer.append(Array2dPrinter.printIntArray(range));
+		return buffer.toString();
 	}
 	
 }

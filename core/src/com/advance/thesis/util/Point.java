@@ -16,4 +16,9 @@ public class Point<Generic>{
 		return new Point<Generic>(x, y);
 	}
 	
+	/** Returns this Point as String */
+	public String toString(){
+		return x.toString()+"|"+y.toString();
+	}
+	
 }

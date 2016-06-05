@@ -60,8 +60,8 @@ public class Map {
 	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
 	protected void move(int originX, int originY, int targetX, int targetY){
 		UnitContainer temp = this.units[originY][originX];
-		this.units[targetY][targetX] = temp;
 		this.units[originY][originX] = NONE_UNIT;
+		this.units[targetY][targetX] = temp;
 	}
 	
 	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */

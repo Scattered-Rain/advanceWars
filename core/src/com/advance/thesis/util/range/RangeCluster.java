@@ -104,7 +104,7 @@ public class RangeCluster {
 		buffer.append("\n");
 		buffer.append("Local origin of range: "+this.origin);
 		buffer.append("\n");
-		buffer.append("Global location of RangeCluster origin point: "+this.mapLocation);
+		buffer.append("Global location of RangeCluster root point: "+this.mapLocation);
 		buffer.append("\n");
 		buffer.append(Array2dPrinter.printIntArray(range));
 		return buffer.toString();

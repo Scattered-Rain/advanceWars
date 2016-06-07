@@ -25,7 +25,7 @@ public class Map {
 	/** Constructs Default, empty map of given dimensions */
 	public Map(int width, int height){
 		setMap(width, height);
-		this.units[0][0] = new UnitContainer(Unit.INFANTRY, Player.P0, 10);
+		this.units[0][0] = new UnitContainer(Unit.ARTILLERY, Player.P0, 10);
 	}
 	
 	/** Constructs new Map based on raw values (for cloning) */

@@ -1,47 +1,54 @@
-package com.advance.thesis.util;
+package com.advance.thesis.util.range;
 
 import com.advance.thesis.game.enums.MoveType;
+import com.advance.thesis.game.enums.Unit;
 import com.advance.thesis.game.logic.Map;
+import com.advance.thesis.util.Direction;
+import com.advance.thesis.util.Point;
 
-public class RangeExpander {
+public abstract class RangeExpander {
 	
 	
 	/** Returns RangeCluster of the Movement the given unit can make */
 	public static RangeCluster calcMoveRange(Map map, Point<Integer> unit){
-		RangeExpander re = new RangeExpander(map, unit);
+		RangeExpander re = new MovementRangeExpander(map, unit);
+		return re.process();
+	}
+	
+	/** Returns RangeCluster of the Shooting Range the given unit can make */
+	public static RangeCluster calcShootingRange(Map map, Point<Integer> unit){
+		RangeExpander re = new ShootingRangeExpander(map, unit);
 		return re.process();
 	}
 	
 	
+	//Class
+	
 	/** 2D Array capable of holding the entire possible range of ranges */
-	private int[][] maxCluster;
+	protected int[][] maxCluster;
 	
 	/** The Coordinate of origin */
-	private Point<Integer> origin;
-	
-	/** The MoveType exhibited by the unit in question */
-	private MoveType moveType;
+	protected Point<Integer> origin;
 	
 	/** The Map this problem is concerned about */
-	private Map map;
+	protected Map map;
 	
 	/** The size of the cluster to either side from the center (length 5 -> 2) (Equals movement of unit) */
-	private int oneSideClusterLength;
+	protected int maxMove;
 	
 	
 	/** Constructor for the utility class solely concerned about figuring out the movement range of the given problem */
 	private RangeExpander(Map map, Point<Integer> origin){
 		this.map = map;
 		this.origin = origin;
-		int movement = map.getUnit(origin).getMovement();
+		int movement = calcMovement(origin);
 		this.maxCluster = new int[movement*2+1][movement*2+1];
-		this.moveType = map.getUnit(origin).getMoveType();
-		this.oneSideClusterLength = movement;
-		recCalcInit(new Point<Integer>(oneSideClusterLength, oneSideClusterLength), movement);
+		this.maxMove = movement;
+		recCalcInit(new Point<Integer>(maxMove, maxMove), movement);
 	}
 	
 	/** Creates the Range Cluster */
-	private RangeCluster process(){
+	public RangeCluster process(){
 		int lowestX = maxCluster.length-1;
 		int lowestY = maxCluster.length-1;
 		int highestX = 0;
@@ -81,17 +88,18 @@ public class RangeExpander {
 				fittetCluster[cy][cx] = maxCluster[y][x];
 			}
 		}
-		Point<Integer> mapLocation = new Point<Integer>(origin.getX()-oneSideClusterLength+lowestX, origin.getY()-oneSideClusterLength+lowestY);
-		Point<Integer> origin = new Point<Integer>(oneSideClusterLength-lowestX, oneSideClusterLength-lowestY);
+		Point<Integer> mapLocation = new Point<Integer>(origin.getX()-maxMove+lowestX, origin.getY()-maxMove+lowestY);
+		Point<Integer> origin = new Point<Integer>(maxMove-lowestX, maxMove-lowestY);
+		fittetCluster = postProcessFittetCluster(fittetCluster, mapLocation, origin);
 		RangeCluster cluster = new RangeCluster(fittetCluster, mapLocation, origin);
 		return cluster;
 	}
 	
 	/** Sets up for recClac */
-	private void recCalcInit(Point<Integer> loc, int movementLeft){
-		maxCluster[loc.getY()][loc.getX()] = movementLeft;
+	private void recCalcInit(Point<Integer> loc, int movement){
+		maxCluster[loc.getY()][loc.getX()] = movement;
 		for(Direction dir : Direction.values()){
-			recCalc(new Point<Integer>(loc.getX()+dir.getX(), loc.getY()+dir.getY()), movementLeft);
+			recCalc(new Point<Integer>(loc.getX()+dir.getX(), loc.getY()+dir.getY()), movement);
 		}
 	}
 	
@@ -107,7 +115,7 @@ public class RangeExpander {
 			return;
 		}
 		//Calc move cost
-		int moveCost = map.getTerrain(globLoc).getMoveCost(moveType);
+		int moveCost = calcMoveCost(globLoc, loc, movementLeft);
 		//Calc Movement left on this tile
 		int movementAtStep = movementLeft-moveCost;
 		if(movementAtStep>=0){
@@ -135,7 +143,60 @@ public class RangeExpander {
 	
 	/** Converts local maxCluster coordinates to global map coordinates */
 	private Point<Integer> convert(Point<Integer> localCoords){
-		return new Point<Integer>(localCoords.getX()+origin.getX()-oneSideClusterLength, localCoords.getY()+origin.getY()-oneSideClusterLength);
+		return new Point<Integer>(localCoords.getX()+origin.getX()-maxMove, localCoords.getY()+origin.getY()-maxMove);
+	}
+	
+	
+	//Generic methods (subject to polymorphism)
+	/** Abstract method for calculating tile's movemnent cost */
+	protected abstract int calcMoveCost(Point<Integer> globLoc, Point<Integer> loc, int movementLeft);
+	
+	/** Calculate the amount of movement available */
+	protected abstract int calcMovement(Point<Integer> unit);
+	
+	/** Allows post processing on the cluster grid used as the direct base of the RangeCluster */
+	protected int[][] postProcessFittetCluster(int[][] fittetCluster, Point<Integer> mapLocation, Point<Integer> origin){
+		return fittetCluster;
+	}
+	
+	
+	//Inner classes ---
+	/** Range Expander for the purposes of Unit Movement */
+	private static class MovementRangeExpander extends RangeExpander{
+		public MovementRangeExpander(Map map, Point<Integer> origin){
+			super(map, origin);
+		}
+		@Override protected int calcMoveCost(Point<Integer> globLoc, Point<Integer> loc, int movementLeft){
+			return super.map.getTerrain(globLoc).getMoveCost(super.map.getUnit(super.origin).getMoveType());
+		}
+		@Override protected int calcMovement(Point<Integer> unit){
+			return map.getUnit(origin).getMovement();
+		}
+	}
+	
+	/** Range Expander for the purposes of Ranged Attacks */
+	private static class ShootingRangeExpander extends RangeExpander{
+		public ShootingRangeExpander(Map map, Point<Integer> origin){
+			super(map, origin);
+		}
+		@Override protected int calcMoveCost(Point<Integer> globLoc, Point<Integer> loc, int movementLeft){
+			return 1;
+		}
+		@Override protected int calcMovement(Point<Integer> unit){
+			return map.getUnit(origin).getShootingRange().getY();
+		}
+		@Override protected int[][] postProcessFittetCluster(int[][] fittetCluster, Point<Integer> mapLocation, Point<Integer> origin){
+			//TODO: Make more general if neccessary
+			int minRange = Unit.ARTILLERY.getShootingRange().getX();
+			for(int cy=0; cy<fittetCluster.length; cy++){
+				for(int cx=0; cx<fittetCluster[0].length; cx++){
+					if(fittetCluster[cy][cx]>=minRange){
+						fittetCluster[cy][cx] = RangeCluster.OUT_OF_RANGE;
+					}
+				}
+			}
+			return fittetCluster;
+		}
 	}
 	
 }

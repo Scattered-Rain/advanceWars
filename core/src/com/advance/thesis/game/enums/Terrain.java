@@ -32,6 +32,9 @@ public enum Terrain {
 	
 	/** Returns the movement costs of this terrain type given the Movement Type */
 	public int getMoveCost(MoveType moveType){
+		if(moveCosts[moveType.getIndex()]==GameConstants.IMPASSABLE){
+			return Integer.MAX_VALUE;
+		}
 		return moveCosts[moveType.getIndex()];
 	}
 	

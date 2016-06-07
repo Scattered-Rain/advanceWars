@@ -1,4 +1,7 @@
-package com.advance.thesis.util;
+package com.advance.thesis.util.range;
+
+import com.advance.thesis.util.Array2dPrinter;
+import com.advance.thesis.util.Point;
 
 import lombok.Getter;
 

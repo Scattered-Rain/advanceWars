@@ -44,7 +44,7 @@ public class Main extends ApplicationAdapter {
 		this.loc[0] = x;
 		this.loc[1] = y;
 		System.out.println(map.getUnit(x, y).getName());
-		System.out.println(RangeExpander.calcShootingRange(map, new Point<Integer>(x, y)));
+		System.out.println(RangeExpander.calcShootingRange(map, new Point(x, y)));
 		renderer.render();
 	}
 	

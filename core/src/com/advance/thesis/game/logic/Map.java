@@ -65,7 +65,7 @@ public class Map {
 	}
 	
 	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
-	protected void move(Point<Integer> origin, Point<Integer> target){
+	protected void move(Point origin, Point target){
 		move(origin.getX(), origin.getY(), target.getX(), target.getY());
 	}
 	
@@ -75,7 +75,7 @@ public class Map {
 	}
 	
 	/** Returns Terrain Type at given Point */
-	public Terrain getTerrain(Point<Integer> point){
+	public Terrain getTerrain(Point point){
 		return getTerrain(point.getX(), point.getY());
 	}
 	
@@ -85,7 +85,7 @@ public class Map {
 	}
 	
 	/** Returns Unit Type at given Point */
-	public Unit getUnit(Point<Integer> point){
+	public Unit getUnit(Point point){
 		return getUnit(point.getX(), point.getY());
 	}
 	

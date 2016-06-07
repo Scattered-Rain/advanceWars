@@ -57,9 +57,34 @@ public class RangeCluster {
 		return false;
 	}
 	
+	/** Returns whether the local coordinates given are in range */
+	public boolean inRange(Point loc){
+		return inRange(loc.x, loc.y);
+	}
+	
 	/** Returns whether the global coordinates given are in range */
 	public boolean inRangeGlobal(int x, int y){
 		return inRange(x-mapLocation.getX(), y-mapLocation.getY());
+	}
+	
+	/** Returns whether the global coordinates given are in range */
+	public boolean inRangeGlobal(Point loc){
+		return inRangeGlobal(loc.x, loc.y);
+	}
+	
+	/** Returns local point given global point */
+	public Point globalToLocal(Point loc){
+		return loc.substract(this.mapLocation);
+	}
+	
+	/** Returns global point given local point */
+	public Point localToGlobal(Point loc){
+		return loc.add(this.mapLocation);
+	}
+	
+	/** Returns the global position of origin point on map */
+	public Point getGlobalOrigin(){
+		return localToGlobal(origin);
 	}
 	
 	/** Checks whether the given local coordinates are within the bounding box of the Cluster */
@@ -75,11 +100,11 @@ public class RangeCluster {
 	/** Returns String representing this RangeCluster */
 	public String toString(){
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Global center of range: "+new Point(this.mapLocation.getX()+this.origin.getX(), this.mapLocation.getY()+this.origin.getY()));
+		buffer.append("Global origin of range: "+new Point(this.mapLocation.getX()+this.origin.getX(), this.mapLocation.getY()+this.origin.getY()));
 		buffer.append("\n");
-		buffer.append("Local center of range: "+this.origin);
+		buffer.append("Local origin of range: "+this.origin);
 		buffer.append("\n");
-		buffer.append("Global origin of RangeCluster origin point: "+this.mapLocation);
+		buffer.append("Global location of RangeCluster origin point: "+this.mapLocation);
 		buffer.append("\n");
 		buffer.append(Array2dPrinter.printIntArray(range));
 		return buffer.toString();

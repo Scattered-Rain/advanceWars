@@ -26,7 +26,7 @@ public class Main extends ApplicationAdapter {
 	private MapRenderer renderer;
 	
 	private MapController m;
-	private int[] loc = new int[]{0, 0};
+	private Point loc = new Point(0, 0);
 	
 	
 	@Override public void create () {
@@ -37,14 +37,11 @@ public class Main extends ApplicationAdapter {
 	
 	
 	@Override public void render () {
-		Random rand = new Random();
-		int x = rand.nextInt(map.getWidth());
-		int y = rand.nextInt(map.getHeight());
-		m.move(loc[0], loc[1], x, y);
-		this.loc[0] = x;
-		this.loc[1] = y;
-		System.out.println(map.getUnit(x, y).getName());
-		System.out.println(RangeExpander.calcShootingRange(map, new Point(x, y)));
+		Point nPoint = map.getMovementRange(loc).getRandLegalPoint();
+		System.out.println(m.move(loc, nPoint));
+		this.loc = nPoint;
+		System.out.println(map.getUnit(loc).getName());
+		System.out.println(map.getMovementRange(loc));
 		renderer.render();
 	}
 	

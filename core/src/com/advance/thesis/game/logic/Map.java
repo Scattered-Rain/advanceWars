@@ -4,13 +4,15 @@ import com.advance.thesis.game.enums.Player;
 import com.advance.thesis.game.enums.Terrain;
 import com.advance.thesis.game.enums.Unit;
 import com.advance.thesis.util.Point;
+import com.advance.thesis.util.range.RangeCluster;
+import com.advance.thesis.util.range.RangeExpander;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class Map {
 	
-	private static final UnitContainer NONE_UNIT = new UnitContainer(Unit.NONE, Player.NONE, -1);
+	private static final UnitContainer NO_UNIT = new UnitContainer(Unit.NONE, Player.NONE, -1);
 	
 	/** The dimensions of the map */
 	@Getter private int width;
@@ -51,8 +53,8 @@ public class Map {
 		this.units = new UnitContainer[height][width];
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
-				units[cy][cx] = NONE_UNIT;
-				terrain[cy][cx] = Terrain.PLAIN;
+				units[cy][cx] = NO_UNIT;
+				terrain[cy][cx] = Terrain.PLAINS;
 			}
 		}
 	}
@@ -60,7 +62,7 @@ public class Map {
 	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
 	protected void move(int originX, int originY, int targetX, int targetY){
 		UnitContainer temp = this.units[originY][originX];
-		this.units[originY][originX] = NONE_UNIT;
+		this.units[originY][originX] = NO_UNIT;
 		this.units[targetY][targetX] = temp;
 	}
 	
@@ -87,6 +89,21 @@ public class Map {
 	/** Returns Unit Type at given Point */
 	public Unit getUnit(Point point){
 		return getUnit(point.getX(), point.getY());
+	}
+	
+	/** Returns whether the given point is actually on the map */
+	public boolean inBounds(Point loc){
+		return loc.x>=0 && loc.x<this.width && loc.y>=0 && loc.y<this.height;
+	}
+	
+	/** Returns RangeCluster of the movement at the given point */
+	public RangeCluster getMovementRange(Point unit){
+		return RangeExpander.calcMoveRange(this, unit);
+	}
+	
+	/** Returns the Shooting Range of the unit at the given point */
+	public RangeCluster getShootingRange(Point unit){
+		return RangeExpander.calcShootingRange(this, unit);
 	}
 	
 	/** Returns deep clone of this map */

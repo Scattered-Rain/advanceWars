@@ -32,7 +32,7 @@ public enum Unit {
 	}
 	
 	public AtlasRegion getImg(){
-		return GameConstants.atlas.findRegion(imgName);
+		return GameConstants.ATLAS.findRegion(imgName);
 	}
 	
 }

@@ -92,6 +92,15 @@ public class RangeCluster {
 		return x>=0 && x<width && y>=0 && y<height;
 	}
 	
+	/** Returns random global point which is legal within the range this cluster describes - note: leads to infinite loop if none are legal */
+	public Point getRandLegalPoint(){
+		Point p = new Point(mapLocation.x, mapLocation.y, width, height);
+		while(!inRangeGlobal(p)){
+			p = new Point(mapLocation.x, mapLocation.y, width, height);
+		}
+		return p;
+	}
+	
 	/** Returns deep clone of this Range Cluster */
 	public RangeCluster clone(){
 		return new RangeCluster(this);

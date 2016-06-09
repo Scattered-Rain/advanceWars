@@ -1,5 +1,8 @@
 package com.advance.thesis.game.logic;
 
+import com.advance.thesis.util.Point;
+
+/** General means of controlling the control based part of the game logic */
 public class MapController {
 	
 	/** The Map this Controller influences */
@@ -11,9 +14,32 @@ public class MapController {
 		this.map = map;
 	}
 	
+	
 	/** Moves unit at origin to target if possible, returns whether movement was successful */
-	public boolean move(int originX, int originY, int targetX, int targetY){
-		map.move(originX, originY, targetX, targetY);
+	public boolean move(Point origin, Point target){
+		if(checkMoveLegality(origin, target)){
+			map.move(origin, target);
+			return true;
+		}
+		return false;
+	}
+	
+	/** Returns whether the requested movement is legal */
+	public boolean checkMoveLegality(Point origin, Point target){
+		if(!(map.inBounds(origin) && map.inBounds(target))){
+			System.out.println(1);
+			return false;
+		}
+		if(!(map.getUnit(origin).isUnit() && !map.getUnit(target).isUnit())){
+			if(!origin.isIdentical(target)){
+				System.out.println(2);
+				return false;
+			}
+		}
+		if(!map.getMovementRange(origin).inRangeGlobal(target)){
+			System.out.println(3);
+			return false;
+		}
 		return true;
 	}
 	

@@ -9,9 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 /** Terrain of the map */
 public enum Terrain {
-	PLAIN(0, "Plain", "tPlains", 1, false, 
+	PLAINS(0, "Plain", "tPlains", 1, false, 
 			new int[]{1, 1, 1, 1}),
-	MOUNTAIN(1, "Mountain", "tHill", 4, false, 
+	HILL(1, "Mountain", "tHill", 4, false, 
 			new int[]{2, 1, GameConstants.IMPASSABLE, GameConstants.IMPASSABLE}),
 	ROAD(2, "Road", "tRoad", 0, false, 
 			new int[]{1, 1, 1, 1}),
@@ -45,6 +45,6 @@ public enum Terrain {
 	
 	/** Returns name of image used for representing Terrain on map */
 	public AtlasRegion getImg(){
-		return GameConstants.atlas.findRegion(imgName);
+		return GameConstants.ATLAS.findRegion(imgName);
 	}
 }

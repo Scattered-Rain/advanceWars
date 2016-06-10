@@ -27,6 +27,7 @@ public class Main extends ApplicationAdapter {
 	
 	private MapController m;
 	private Point loc = new Point(0, 0);
+	private int frame = 0;
 	
 	
 	@Override public void create () {
@@ -37,12 +38,15 @@ public class Main extends ApplicationAdapter {
 	
 	
 	@Override public void render () {
+		frame++;
 		Point nPoint = map.getMovementRange(loc).getRandLegalPoint();
+		System.out.println("Frame: "+frame);
 		System.out.println(m.move(loc, nPoint));
 		this.loc = nPoint;
 		System.out.println(map.getUnit(loc).getName());
 		System.out.println(map.getMovementRange(loc));
 		renderer.render();
+		
 	}
 	
 }

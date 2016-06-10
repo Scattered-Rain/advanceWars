@@ -25,4 +25,20 @@ public enum Direction {
 	public int getY(){
 		return DIR[index][1];
 	}
+	
+	/** Returns the direction 90 degrees clockwise from this direction */
+	public Direction turnClockwise(){
+		return Direction.values()[index+1%4];
+	}
+	
+	/** Returns the direction 90 degrees counterclockwise from this direction */
+	public Direction turnCounterClockwise(){
+		return this.turnClockwise().turnClockwise().turnClockwise();
+	}
+	
+	/** Returns the direction opposite from this direction */
+	public Direction turn180(){
+		return this.turnClockwise().turnClockwise();
+	}
+	
 }

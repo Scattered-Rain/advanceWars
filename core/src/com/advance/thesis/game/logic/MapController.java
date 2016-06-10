@@ -27,17 +27,17 @@ public class MapController {
 	/** Returns whether the requested movement is legal */
 	public boolean checkMoveLegality(Point origin, Point target){
 		if(!(map.inBounds(origin) && map.inBounds(target))){
-			System.out.println(1);
+			System.out.println("Movement parameters out of bound");
 			return false;
 		}
 		if(!(map.getUnit(origin).isUnit() && !map.getUnit(target).isUnit())){
 			if(!origin.isIdentical(target)){
-				System.out.println(2);
+				System.out.println("Movement obscured");
 				return false;
 			}
 		}
 		if(!map.getMovementRange(origin).inRangeGlobal(target)){
-			System.out.println(3);
+			System.out.println("Movement out of legal move range");
 			return false;
 		}
 		return true;

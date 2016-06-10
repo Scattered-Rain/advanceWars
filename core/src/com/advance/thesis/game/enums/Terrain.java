@@ -1,6 +1,6 @@
 package com.advance.thesis.game.enums;
 
-import com.advance.thesis.game.GameConstants;
+import static com.advance.thesis.game.GameConstants.*;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 import lombok.AllArgsConstructor;
@@ -9,14 +9,14 @@ import lombok.Getter;
 @AllArgsConstructor
 /** Terrain of the map */
 public enum Terrain {
-	PLAINS(0, "Plain", "tPlains", 1, false, 
+	PLAINS(0, "Plains", "tPlains", 1, false, 
 			new int[]{1, 1, 1, 1}),
-	HILL(1, "Mountain", "tHill", 4, false, 
-			new int[]{2, 1, GameConstants.IMPASSABLE, GameConstants.IMPASSABLE}),
+	HILL(1, "Hill", "tHill", 4, false, 
+			new int[]{2, 1, IMPASSABLE, IMPASSABLE}),
 	ROAD(2, "Road", "tRoad", 0, false, 
 			new int[]{1, 1, 1, 1}),
 	SEA(3, "Sea", "tSea", 0, false, 
-			new int[]{GameConstants.IMPASSABLE, GameConstants.IMPASSABLE, GameConstants.IMPASSABLE, GameConstants.IMPASSABLE}),
+			new int[]{IMPASSABLE, IMPASSABLE, IMPASSABLE, IMPASSABLE}),
 	FOREST(4, "Forest", "tForest", 2, false, 
 			new int[]{1, 1, 2, 3}),
 	CITY(5, "City", "tCity", 3, true, 
@@ -32,7 +32,7 @@ public enum Terrain {
 	
 	/** Returns the movement costs of this terrain type given the Movement Type */
 	public int getMoveCost(MoveType moveType){
-		if(moveCosts[moveType.getIndex()]==GameConstants.IMPASSABLE){
+		if(moveCosts[moveType.getIndex()]==IMPASSABLE){
 			return Integer.MAX_VALUE;
 		}
 		return moveCosts[moveType.getIndex()];
@@ -45,6 +45,7 @@ public enum Terrain {
 	
 	/** Returns name of image used for representing Terrain on map */
 	public AtlasRegion getImg(){
-		return GameConstants.ATLAS.findRegion(imgName);
+		return ATLAS.findRegion(imgName);
 	}
+	
 }

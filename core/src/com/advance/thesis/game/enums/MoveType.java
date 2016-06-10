@@ -7,7 +7,7 @@ import lombok.Getter;
 /** Describes all types of possible movement */
 public enum MoveType {
 	FOOT(0),
-	MECH(1),
+	MECH_MOVE(1),
 	TREADS(2),
 	TIRES(3);//Tires aren't actually used by any of the units
 	

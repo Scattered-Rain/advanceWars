@@ -12,7 +12,7 @@ public class GameConstants {
 	public static final TextureAtlas ATLAS = new TextureAtlas(Gdx.files.internal("map/atlas.atlas"));
 	
 	/** Random object to be generally used by systems in the game */
-	public static final Random RANDOM = new Random(42);
+	public static final Random RANDOM = new Random();
 	
 	/** Movement Cost that represents impassability */
 	public static final int IMPASSABLE = -1;

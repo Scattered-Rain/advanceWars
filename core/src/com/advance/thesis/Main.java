@@ -5,7 +5,10 @@ import java.util.Random;
 import lombok.Data;
 
 import com.advance.thesis.game.GameConstants;
+import com.advance.thesis.game.enums.Player;
 import com.advance.thesis.game.enums.Terrain;
+import com.advance.thesis.game.enums.Unit;
+import com.advance.thesis.game.logic.Combat;
 import com.advance.thesis.game.logic.Map;
 import com.advance.thesis.game.logic.MapController;
 import com.advance.thesis.game.mapRenderer.GameRenderer;
@@ -25,28 +28,35 @@ public class Main extends ApplicationAdapter {
 	private Map map;
 	private MapRenderer renderer;
 	
-	private MapController m;
-	private Point loc = new Point(0, 0);
-	private int frame = 0;
+	private Point[] loc;
 	
 	
 	@Override public void create () {
-		this.map = new Map(8, 8);
+		int size = 8;
+		this.map = new Map(size, size);
 		this.renderer = new GameRenderer(map);
-		this.m = new MapController(map);
+		loc = new Point[10];
+		for(int c=0; c<loc.length; c++){
+			loc[c] = new Point(0, 0, size, size);
+		}
 	}
 	
 	
 	@Override public void render () {
-		frame++;
-		Point nPoint = map.getMovementRange(loc).getRandLegalPoint();
-		System.out.println("Frame: "+frame);
-		System.out.println(m.move(loc, nPoint));
-		this.loc = nPoint;
-		System.out.println(map.getUnit(loc).getName());
-		System.out.println(map.getMovementRange(loc));
+		for(int c=0; c<loc.length; c++){
+			map.debugSpawnUnit(Unit.INFANTRY, Player.P0, loc[c]);
+		}
+		Combat combat = map.calcComabt(loc[0], loc[1]);
+		System.out.println(combat+"\n");
 		renderer.render();
-		
+		Point[] temp = new Point[loc.length];
+		for(int c=0; c<loc.length; c++){
+			temp[c] = map.getMovementRange(loc[c]).getRandLegalPoint();
+		}
+		for(int c=0; c<loc.length; c++){
+			map.debugEraseUnit(loc[c]);
+		}
+		loc = temp;
 	}
 	
 }

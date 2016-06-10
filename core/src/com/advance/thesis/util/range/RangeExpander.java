@@ -170,6 +170,10 @@ public abstract class RangeExpander {
 			return super.map.getTerrain(globLoc).getMoveCost(super.map.getUnit(super.origin).getMoveType());
 		}
 		@Override protected int calcMovement(Point unit){
+			if(!super.map.getUnit(super.origin).isUnit()){
+				System.out.println("Try to move Non Unit");
+				System.exit(0);
+			}
 			return map.getUnit(origin).getMovement();
 		}
 	}

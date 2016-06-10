@@ -35,7 +35,7 @@ public class Combat {
 			retDamage = calcStrike(units.reverse(), terrain.reverse(), hp.reverse());
 			hp.setA(Math.max(hp.getA()-retDamage, 0));
 		}
-		this.appliedDamage = new Tuple<Integer>(firstStrikeDamage, retDamage);
+		this.appliedDamage = new Tuple<Integer>(retDamage, firstStrikeDamage);
 	}
 	
 	/** Calculates the damage of a singular strike (in any Tuple a is the relative attacker with b being the relative defender)*/
@@ -70,6 +70,19 @@ public class Combat {
 	/** Returns the amount of damage afflicted to the defender in this Combat Event */
 	public int getDefenderDamage(){
 		return appliedDamage.getB();
+	}
+	
+	/** Returns String Representation of this Encounter */
+	public String toString(){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("(Attacker) "+units.getA().getName()+" vs (Defender) "+units.getB().getName());
+		buffer.append("\n");
+		buffer.append("Terrain: "+terrain.getA().getName()+" vs "+terrain.getB().getName());
+		buffer.append("\n");
+		buffer.append("Final HP: "+hp.getA()+" vs HP: "+hp.getB());
+		buffer.append("\n");
+		buffer.append("(Received Damage: "+appliedDamage.getA()+" vs "+appliedDamage.getB()+")");
+		return buffer.toString();
 	}
 	
 }

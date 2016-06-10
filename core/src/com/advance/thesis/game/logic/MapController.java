@@ -17,30 +17,9 @@ public class MapController {
 	
 	/** Moves unit at origin to target if possible, returns whether movement was successful */
 	public boolean move(Point origin, Point target){
-		if(checkMoveLegality(origin, target)){
-			map.move(origin, target);
-			return true;
-		}
-		return false;
+		return map.move(origin, target);
 	}
 	
-	/** Returns whether the requested movement is legal */
-	public boolean checkMoveLegality(Point origin, Point target){
-		if(!(map.inBounds(origin) && map.inBounds(target))){
-			System.out.println("Movement parameters out of bound");
-			return false;
-		}
-		if(!(map.getUnit(origin).isUnit() && !map.getUnit(target).isUnit())){
-			if(!origin.isIdentical(target)){
-				System.out.println("Movement obscured");
-				return false;
-			}
-		}
-		if(!map.getMovementRange(origin).inRangeGlobal(target)){
-			System.out.println("Movement out of legal move range");
-			return false;
-		}
-		return true;
-	}
+	
 	
 }

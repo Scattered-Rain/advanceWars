@@ -27,7 +27,6 @@ public class Map {
 	/** Constructs Default, empty map of given dimensions */
 	public Map(int width, int height){
 		setMap(width, height);
-		this.units[0][0] = new UnitContainer(Unit.ARTILLERY, Player.P0, 10);
 	}
 	
 	/** Constructs new Map based on raw values (for cloning) */
@@ -53,24 +52,69 @@ public class Map {
 		this.units = new UnitContainer[height][width];
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
+				terrain[cy][cx] = Terrain.ROAD;
 				units[cy][cx] = NO_UNIT;
-				terrain[cy][cx] = Terrain.PLAINS;
 			}
 		}
 	}
 	
+	//Movement Related
 	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
-	protected void move(int originX, int originY, int targetX, int targetY){
+	protected void rawMove(int originX, int originY, int targetX, int targetY){
 		UnitContainer temp = this.units[originY][originX];
 		this.units[originY][originX] = NO_UNIT;
 		this.units[targetY][targetX] = temp;
 	}
 	
-	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
-	protected void move(Point origin, Point target){
-		move(origin.getX(), origin.getY(), target.getX(), target.getY());
+	/** Moves unit at origin to target if possible, returns whether movement was successful */
+	public boolean move(Point origin, Point target){
+		if(checkMoveLegality(origin, target)){
+			this.rawMove(origin, target);
+			return true;
+		}
+		return false;
 	}
 	
+	/** Moves Unit from origin to target location - Note: Does not perform ANY checking! */
+	private void rawMove(Point origin, Point target){
+		rawMove(origin.getX(), origin.getY(), target.getX(), target.getY());
+	}
+	
+	/** Returns whether the requested movement is legal */
+	public boolean checkMoveLegality(Point origin, Point target){
+		if(!(this.inBounds(origin) && this.inBounds(target))){
+			System.out.println("Movement parameters out of bound");
+			return false;
+		}
+		if(!(this.getUnit(origin).isUnit() && !this.getUnit(target).isUnit())){
+			if(!origin.isIdentical(target)){
+				System.out.println("Movement obscured");
+				return false;
+			}
+		}
+		if(!this.getMovementRange(origin).inRangeGlobal(target)){
+			System.out.println("Movement out of legal move range");
+			return false;
+		}
+		return true;
+	}
+	
+	//Combat Related
+	/** Calculates the Combat Event of the given two Points, returns null if not legal */
+	public Combat calcComabt(Point attacker, Point defender){
+		if(inBounds(attacker) && inBounds(defender)){
+			Unit aUnit = getUnit(attacker);
+			Unit dUnit = getUnit(defender);
+			if(aUnit.isUnit() && dUnit.isUnit()){
+				Combat combat = new Combat(aUnit, dUnit, getUnitContainer(attacker).getHp(), 
+						getUnitContainer(defender).getHp(), getTerrain(attacker), getTerrain(defender));
+				return combat;
+			}
+		}
+		return null;
+	}
+	
+	//Utility
 	/** Returns Terrain Type at x|y */
 	public Terrain getTerrain(int x, int y){
 		return this.terrain[y][x];
@@ -89,6 +133,11 @@ public class Map {
 	/** Returns Unit Type at given Point */
 	public Unit getUnit(Point point){
 		return getUnit(point.getX(), point.getY());
+	}
+	
+	/** Returns Unit Container at given location */
+	public UnitContainer getUnitContainer(Point loc){
+		return units[loc.y][loc.x];
 	}
 	
 	/** Returns whether the given point is actually on the map */
@@ -112,6 +161,15 @@ public class Map {
 	}
 	
 	
+	//Debug
+	public void debugSpawnUnit(Unit unit, Player owner, Point point){
+		this.units[point.y][point.x] = new UnitContainer(unit, owner);
+	}
+	
+	public void debugEraseUnit(Point point){
+		this.units[point.y][point.x] = NO_UNIT;
+	}
+	
 	//Inner Utility classes -----------
 	
 	@AllArgsConstructor
@@ -120,6 +178,12 @@ public class Map {
 		@Getter private Unit type;
 		@Getter private Player owner;
 		@Getter private int hp;
+		/** Spawn Constructor */
+		public UnitContainer(Unit type, Player owner){
+			this.type = type;
+			this.owner = owner;
+			this.hp = 10;
+		}
 		/** Returns a deep clone of this object */
 		public UnitContainer clone(){
 			return new UnitContainer(type, owner, hp);

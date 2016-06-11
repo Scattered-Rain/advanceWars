@@ -217,7 +217,7 @@ public class Map {
 	
 	@AllArgsConstructor
 	/** Inner class for simplifying storage of active units on the map */
-	private static class UnitContainer{
+	protected static class UnitContainer{
 		@Getter private Unit type;
 		@Getter private Player owner;
 		@Setter @Getter private int hp;

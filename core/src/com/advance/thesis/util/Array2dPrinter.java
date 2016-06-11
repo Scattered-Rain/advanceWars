@@ -9,7 +9,9 @@ public class Array2dPrinter {
 			for(int cx=0; cx<array[0].length; cx++){
 				buffer.append(array[cy][cx]+"\t");
 			}
-			buffer.append("\n");
+			if(cy!=array.length-1){
+				buffer.append("\n");
+			}
 		}
 		return buffer.toString();
 	}

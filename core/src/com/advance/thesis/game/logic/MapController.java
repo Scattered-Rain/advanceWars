@@ -9,6 +9,9 @@ import lombok.Setter;
 
 import com.advance.thesis.game.enums.Player;
 import com.advance.thesis.util.Point;
+import com.advance.thesis.util.range.RangeCluster;
+
+import static com.advance.thesis.game.logic.Map.*;
 
 /** General means of controlling the control based part of the game logic */
 public class MapController {
@@ -27,8 +30,8 @@ public class MapController {
 	/** Constructs new Map Controller */
 	public MapController(Map map){
 		this.map = map;
-		this.units = new ArrayList<LocUnitContainer>();
-		this.stillMovableUnits = new ArrayList<LocUnitContainer>();
+		this.units = new ArrayList<Map.LocUnitContainer>();
+		this.stillMovableUnits = new ArrayList<Map.LocUnitContainer>();
 		refreshUnits();
 	}
 	
@@ -53,13 +56,24 @@ public class MapController {
 		}
 	}
 	
-	
-	//Inner Utility Class
-	/** Keeps track of the unit, its hp AND Location */
-	@AllArgsConstructor
-	public class LocUnitContainer{
-		@Getter private Map.UnitContainer unitCont;
-		@Getter @Setter private Point location;
+	/** Returns a list of all units within attacking range of the given unit that do not belong to this Player */
+	public List<LocUnitContainer> getAttackableUnits(Point loc){
+		UnitContainer unit = map.getUnitContainer(loc);
+		RangeCluster range = null;
+		if(!unit.getType().isRanged()){
+			range = map.getCloseCombatRange(loc);
+		}
+		else{
+			range = map.getShootingRange(loc);
+		}
+		List<LocUnitContainer> units = range.getAllUnitsInRange(map);
+		for(int c=0; c<units.size(); c++){
+			if(units.get(c).getUnitCont().getOwner().equals(this.player)){
+				units.remove(c);
+				c--;
+			}
+		}
+		return units;
 	}
 	
 }

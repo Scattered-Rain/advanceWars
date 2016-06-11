@@ -193,6 +193,11 @@ public class Map {
 		return RangeExpander.calcShootingRange(this, unit);
 	}
 	
+	/** Returns the Close Combat Range of the unit at the given point */
+	public RangeCluster getCloseCombatRange(Point unit){
+		return RangeExpander.calcCloseCombatRange(this, unit);
+	}
+	
 	/** Erases Unit at the given location */
 	private void eraseUnit(Point unit){
 		this.units[unit.y][unit.x] = NO_UNIT;
@@ -215,9 +220,8 @@ public class Map {
 	
 	//Inner Utility classes -----------
 	
-	@AllArgsConstructor
 	/** Inner class for simplifying storage of active units on the map */
-	protected static class UnitContainer{
+	@AllArgsConstructor public static class UnitContainer{
 		@Getter private Unit type;
 		@Getter private Player owner;
 		@Setter @Getter private int hp;
@@ -231,6 +235,12 @@ public class Map {
 		public UnitContainer clone(){
 			return new UnitContainer(type, owner, hp);
 		}
+	}
+	
+	/** Keeps track of the unit, its hp AND Location */
+	@AllArgsConstructor public static class LocUnitContainer{
+		@Getter private Map.UnitContainer unitCont;
+		@Getter @Setter private Point location;
 	}
 	
 }

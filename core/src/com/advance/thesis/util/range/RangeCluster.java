@@ -1,5 +1,9 @@
 package com.advance.thesis.util.range;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.advance.thesis.game.logic.Map;
 import com.advance.thesis.util.Array2dPrinter;
 import com.advance.thesis.util.Point;
 
@@ -114,6 +118,24 @@ public class RangeCluster {
 		return getValueAtLocal(this.globalToLocal(loc));
 	}
 	
+	/** Returns list of all Units on the map that are within this cluster (not including the origin) */
+	public List<Map.LocUnitContainer>getAllUnitsInRange(Map map){
+		List<Map.LocUnitContainer> listicle = new ArrayList<Map.LocUnitContainer>();
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = new Point(cx, cy);
+				if(!loc.isIdentical(this.origin)){
+					loc = this.localToGlobal(loc);
+					Map.UnitContainer cont = map.getUnitContainer(loc);
+					if(cont.getType().isUnit()){
+						listicle.add(new Map.LocUnitContainer(cont, loc));
+					}
+				}
+			}
+		}
+		return listicle;
+	}
+	
 	/** Returns deep clone of this Range Cluster */
 	public RangeCluster clone(){
 		return new RangeCluster(this);
@@ -126,7 +148,7 @@ public class RangeCluster {
 		buffer.append("\n");
 		buffer.append("Local origin of range: "+this.origin);
 		buffer.append("\n");
-		buffer.append("Global location of RangeCluster root point: "+this.mapLocation);
+		buffer.append("Global location of RangeCluster upper left corner point: "+this.mapLocation);
 		buffer.append("\n");
 		buffer.append(Array2dPrinter.printIntArray(range));
 		return buffer.toString();

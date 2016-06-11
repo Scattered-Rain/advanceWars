@@ -1,5 +1,6 @@
 package com.advance.thesis.game.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +27,9 @@ public class MapController {
 	/** Constructs new Map Controller */
 	public MapController(Map map){
 		this.map = map;
+		this.units = new ArrayList<LocUnitContainer>();
+		this.stillMovableUnits = new ArrayList<LocUnitContainer>();
+		refreshUnits();
 	}
 	
 	/** Moves unit at origin to target if possible, returns whether movement was successful */

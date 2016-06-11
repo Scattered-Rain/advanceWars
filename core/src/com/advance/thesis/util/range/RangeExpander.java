@@ -21,6 +21,62 @@ public abstract class RangeExpander {
 		return re.process();
 	}
 	
+	/** Returns RangeCluster of all possible locations that can be attacked in close combat by the given unit */
+	public static RangeCluster calcCloseCombatRange(Map map, Point unit){
+		RangeCluster mov = calcMoveRange(map, unit);
+		//Whether the given directional index of the original cluster borders the maps borders
+		boolean[] dirMapBord = new boolean[4];
+		dirMapBord[Direction.UP.getIndex()] = mov.getMapLocation().y==0;
+		dirMapBord[Direction.RIGHT.getIndex()] = mov.getMapLocation().x+mov.getWidth()==map.getWidth();
+		dirMapBord[Direction.DOWN.getIndex()] = mov.getMapLocation().y+mov.getHeight()==map.getHeight();
+		dirMapBord[Direction.LEFT.getIndex()] = mov.getMapLocation().x==0;
+		Point origin = mov.getOrigin().add(new Point(1, 1));
+		Point mapLocation = mov.getMapLocation().add(new Point(-1, -1));
+		int width = mov.getWidth()+2;
+		int height = mov.getHeight()+2;
+		if(dirMapBord[Direction.RIGHT.getIndex()]){width--;}
+		if(dirMapBord[Direction.LEFT.getIndex()]){
+			mapLocation.add(1, 0);
+			origin.add(-1, 0);
+			width--;
+		}
+		if(dirMapBord[Direction.UP.getIndex()]){
+			mapLocation.add(0, 1);
+			origin.add(0, -1);
+			height--;
+		}
+		if(dirMapBord[Direction.DOWN.getIndex()]){height--;}
+		int[][] newCluster = new int[height][width];
+		for(int cy=0; cy<newCluster.length; cy++){
+			for(int cx=0; cx<newCluster[0].length; cx++){
+				//translate cooridinates for new grid into old grid coords
+				int xOrig = cx-1;
+				int yOrig = cy-1;
+				if(dirMapBord[Direction.LEFT.getIndex()]){
+					xOrig++;
+				}
+				if(dirMapBord[Direction.UP.getIndex()]){
+					yOrig++;
+				}
+				//transcribe
+				int val = mov.getValueAtLocal(new Point(xOrig, yOrig));
+				newCluster[cy][cx] = val+1;
+				//Add Attackables
+				if(val==RangeCluster.OUT_OF_RANGE){
+					newCluster[cy][cx] = RangeCluster.OUT_OF_RANGE;
+					for(int c=0; c<Direction.values().length; c++){
+						Direction dir = Direction.values()[c];
+						if(mov.inRange(new Point(xOrig+dir.getX(), yOrig+dir.getY()))){
+							newCluster[cy][cx] = 0;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return new RangeCluster(newCluster, mapLocation, origin);
+	}
+	
 	
 	//Class
 	
@@ -205,5 +261,4 @@ public abstract class RangeExpander {
 			return fittetCluster;
 		}
 	}
-	
 }

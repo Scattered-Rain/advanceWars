@@ -88,7 +88,7 @@ public class RangeCluster {
 	}
 	
 	/** Checks whether the given local coordinates are within the bounding box of the Cluster */
-	private boolean checkBounds(int x, int y){
+	public boolean checkBounds(int x, int y){
 		return x>=0 && x<width && y>=0 && y<height;
 	}
 	
@@ -99,6 +99,19 @@ public class RangeCluster {
 			p = new Point(mapLocation.x, mapLocation.y, width, height);
 		}
 		return p;
+	}
+	
+	/** Returns the value at the given local point, OUT_OF_RANGE if not legal */
+	public int getValueAtLocal(Point loc){
+		if(!this.inRange(loc)){
+			return OUT_OF_RANGE;
+		}
+		return this.range[loc.y][loc.x];
+	}
+	
+	/** Returns the value at the given local point, OUT_OF_RANGE if not legal */
+	public int getValueAtGlobal(Point loc){
+		return getValueAtLocal(this.globalToLocal(loc));
 	}
 	
 	/** Returns deep clone of this Range Cluster */

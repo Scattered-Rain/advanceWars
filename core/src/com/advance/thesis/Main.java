@@ -64,6 +64,9 @@ public class Main extends ApplicationAdapter {
 			}
 			if(mayMove){
 				Point potNext = map.getMovementRange(loc[c]).getRandLegalPoint();
+				System.out.println(map.getMovementRange(loc[c]));
+				System.out.println("--");
+				System.out.println(RangeExpander.calcCloseCombatRange(map, loc[c]));
 				boolean legal = true;
 				for(int c2=0; c2<loc.length; c2++){
 					if(c2!=c){

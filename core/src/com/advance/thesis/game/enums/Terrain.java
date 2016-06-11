@@ -30,6 +30,11 @@ public enum Terrain {
 	//Lists all movement costs, indexed according to MoveType indexes (-1 represents no possible movement)
 	@Getter private int[] moveCosts;
 	
+	/** Returns Random Terrain */
+	public static Terrain getRandomTerrain(){
+		return Terrain.values()[RANDOM.nextInt(Terrain.values().length)];
+	}
+	
 	/** Returns the movement costs of this terrain type given the Movement Type */
 	public int getMoveCost(MoveType moveType){
 		if(moveCosts[moveType.getIndex()]==IMPASSABLE){

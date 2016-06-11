@@ -167,6 +167,9 @@ public abstract class RangeExpander {
 			super(map, origin);
 		}
 		@Override protected int calcMoveCost(Point globLoc, Point loc, int movementLeft){
+			if(super.map.getUnit(globLoc).isUnit()){
+				return Integer.MAX_VALUE;
+			}
 			return super.map.getTerrain(globLoc).getMoveCost(super.map.getUnit(super.origin).getMoveType());
 		}
 		@Override protected int calcMovement(Point unit){

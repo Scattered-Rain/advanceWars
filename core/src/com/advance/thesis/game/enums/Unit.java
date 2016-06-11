@@ -11,8 +11,6 @@ import lombok.Getter;
 /** Units in the game */
 @AllArgsConstructor
 public enum Unit {
-	NONE(-1, "No Unit", "tSea", FOOT, 0, new Point(0, 0), 
-			new UnitList(0, 0, 0, 0, 0)),
 	INFANTRY(0, "Infantry", "uInfantry", FOOT, 3, new Point(0, 0),
 			new UnitList(55, 45, 5, 1, 15)),
 	MECH(1, "Mech Infantry", "uMechInfantry", MECH_MOVE, 2, new Point(0, 0),
@@ -22,7 +20,9 @@ public enum Unit {
 	MEDTANK(3, "Med Tank", "uMedTank", TREADS, 5, new Point(0, 0),
 			new UnitList(105, 95, 85, 55, 105)),
 	ARTILLERY(4, "Artillery", "uArtillery", TREADS, 5, new Point(2, 3),
-			new UnitList(90, 85, 79, 45, 75));
+			new UnitList(90, 85, 79, 45, 75)),
+	NONE(-1, "No Unit", "tSea", FOOT, 0, new Point(0, 0), 
+			new UnitList(0, 0, 0, 0, 0));
 	
 	@Getter private int id;
 	@Getter private String name;
@@ -34,6 +34,11 @@ public enum Unit {
 	@Getter private Point shootingRange;
 	//Describes the base damage the unit does to any given other unit
 	@Getter private UnitList baseDamage;
+	
+	
+	public static Unit getRandomUnit(){
+		return Unit.values()[RANDOM.nextInt(Unit.values().length-1)];
+	}
 	
 	/** Returns whether this unit is an actual Unit */
 	public boolean isUnit(){
@@ -49,6 +54,11 @@ public enum Unit {
 	/** Returns the image of this unit */
 	public AtlasRegion getImg(){
 		return ATLAS.findRegion(imgName);
+	}
+	
+	/** Retruns whether this Unit is Ranged */
+	public boolean isRanged(){
+		return !this.shootingRange.isIdentical(new Point(0, 0));
 	}
 	
 	

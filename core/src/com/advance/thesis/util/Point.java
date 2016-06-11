@@ -53,6 +53,13 @@ public class Point{
 		return this.x==other.x && this.y==other.y;
 	}
 	
+	/** Returns whether 2 points are adjacent to one another */
+	public boolean isAdjacent(Point other){
+		int x = Math.abs(this.getX()-other.getX());
+		int y = Math.abs(this.getY()-other.getY());
+		boolean adj = (x==1 && y==0) || (x==0 && y==1);
+		return adj;
+	}
 	
 	/** Returns a copy of this Point (with x and y being shallow copies) */
 	public Point clone(){
@@ -62,7 +69,7 @@ public class Point{
 	
 	/** Returns this Point as String */
 	public String toString(){
-		return x+"|"+y;
+		return "["+x+"|"+y+"]";
 	}
 	
 }

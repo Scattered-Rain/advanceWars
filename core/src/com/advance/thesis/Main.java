@@ -27,36 +27,68 @@ public class Main extends ApplicationAdapter {
 	
 	private Map map;
 	private MapRenderer renderer;
-	
+	private int size;
 	private Point[] loc;
 	
 	
 	@Override public void create () {
-		int size = 8;
+		this.size = 8;
 		this.map = new Map(size, size);
 		this.renderer = new GameRenderer(map);
 		loc = new Point[10];
 		for(int c=0; c<loc.length; c++){
 			loc[c] = new Point(0, 0, size, size);
+			map.debugSpawnUnit(Unit.getRandomUnit(), Player.P0, loc[c]);
 		}
 	}
 	
 	
 	@Override public void render () {
-		for(int c=0; c<loc.length; c++){
-			map.debugSpawnUnit(Unit.INFANTRY, Player.P0, loc[c]);
-		}
-		Combat combat = map.calcComabt(loc[0], loc[1]);
-		System.out.println(combat+"\n");
 		renderer.render();
-		Point[] temp = new Point[loc.length];
 		for(int c=0; c<loc.length; c++){
-			temp[c] = map.getMovementRange(loc[c]).getRandLegalPoint();
+			int target = (c+1)%loc.length;
+			if(!map.getUnit(loc[c]).isUnit()){
+				loc[c] = new Point(0, 0, size, size);
+				map.debugSpawnUnit(Unit.getRandomUnit(), Player.P0, loc[c]);
+				System.out.println("Spawn: "+loc[c]+" "+map.getUnit(loc[c]).getName());
+			}
+			boolean mayMove = true;
+			if(map.getUnit(loc[c]).isRanged()){
+				Combat comb = map.calcCombat(loc[c], loc[target]);
+				if(comb!=null){
+					map.doCombat(loc[c], loc[target]);
+					mayMove = false;
+					System.out.println("Ranged: "+loc[c]+" "+loc[target]+"\n"+comb);
+					System.out.println();
+				}
+			}
+			if(mayMove){
+				Point potNext = map.getMovementRange(loc[c]).getRandLegalPoint();
+				boolean legal = true;
+				for(int c2=0; c2<loc.length; c2++){
+					if(c2!=c){
+						if(loc[c2].isIdentical(potNext)){
+							legal = false;
+						}
+					}
+				}
+				if(legal){
+					map.move(loc[c], potNext);
+					loc[c] = potNext;
+				}
+			}
+			if(!map.getUnit(loc[c]).isRanged()){
+				Combat comb = map.calcCombat(loc[c], loc[target]);
+				if(comb!=null){
+					map.doCombat(loc[c], loc[target]);
+					System.out.println("Close: "+loc[c]+" "+loc[target]+"\n"+comb);
+					System.out.println();
+					if(!comb.defenderAlive()){
+						//loc[0] = loc[target];
+					}
+				}
+			}
 		}
-		for(int c=0; c<loc.length; c++){
-			map.debugEraseUnit(loc[c]);
-		}
-		loc = temp;
 	}
 	
 }

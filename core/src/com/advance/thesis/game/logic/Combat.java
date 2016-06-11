@@ -13,16 +13,19 @@ public class Combat {
 	private Tuple<Terrain> terrain;
 	/** Holds the hp of the units engaging in combat, a being the aggressor and b the defender */
 	private Tuple<Integer> hp;
+	/** Whether this attack is ranged */
+	private boolean ranged;
 	
 	/** Damage that was done to the given units by this encounter */
 	private Tuple<Integer> appliedDamage;
 	
 	
 	/** Constructs new Combat Objects */
-	public Combat(Unit attackingUnit, Unit defendingUnit, int attackingHp, int defendingHp, Terrain attackingTerrain, Terrain defendingTerrain){
+	public Combat(Unit attackingUnit, Unit defendingUnit, int attackingHp, int defendingHp, Terrain attackingTerrain, Terrain defendingTerrain, boolean ranged){
 		this.units = new Tuple<Unit>(attackingUnit, defendingUnit);
 		this.terrain = new Tuple<Terrain>(attackingTerrain, defendingTerrain);
 		this.hp = new Tuple<Integer>(attackingHp, defendingHp);
+		this.ranged = ranged;
 		calcResult();
 	}
 	
@@ -31,7 +34,7 @@ public class Combat {
 		int firstStrikeDamage = calcStrike(units, terrain, hp);
 		hp.setB(Math.max(hp.getB()-firstStrikeDamage, 0));
 		int retDamage = 0;
-		if(hp.getB()>0){
+		if(hp.getB()>0 && !ranged && !units.getB().isRanged()){
 			retDamage = calcStrike(units.reverse(), terrain.reverse(), hp.reverse());
 			hp.setA(Math.max(hp.getA()-retDamage, 0));
 		}

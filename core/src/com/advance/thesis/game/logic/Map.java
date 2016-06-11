@@ -9,6 +9,7 @@ import com.advance.thesis.util.range.RangeExpander;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 public class Map {
 	
@@ -52,7 +53,7 @@ public class Map {
 		this.units = new UnitContainer[height][width];
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
-				terrain[cy][cx] = Terrain.ROAD;
+				terrain[cy][cx] = Terrain.getRandomTerrain();
 				units[cy][cx] = NO_UNIT;
 			}
 		}
@@ -100,18 +101,55 @@ public class Map {
 	}
 	
 	//Combat Related
+	/** Enacts the given combat scenario on the Map, returns COmbat Event (null if not legal and hence not acted upon) */
+	public Combat doCombat(Point attacker, Point defender){
+		Combat combat = calcCombat(attacker, defender);
+		if(combat!=null){
+			setUnitHp(attacker, combat.getAttackerHp());
+			setUnitHp(defender, combat.getDefenderHp());
+			if(!combat.defenderAlive()){
+				//If defending Unit has been killed and the attacker is not a ranged unit it will move onto the defenders location
+				if(!getUnit(attacker).isRanged()){
+					//TODO: MIGHT be buggy? Idunno, recheck.
+					this.rawMove(attacker, defender);
+				}
+			}
+			return combat;
+		}
+		return null;
+	}
+	
 	/** Calculates the Combat Event of the given two Points, returns null if not legal */
-	public Combat calcComabt(Point attacker, Point defender){
+	public Combat calcCombat(Point attacker, Point defender){
 		if(inBounds(attacker) && inBounds(defender)){
 			Unit aUnit = getUnit(attacker);
 			Unit dUnit = getUnit(defender);
 			if(aUnit.isUnit() && dUnit.isUnit()){
-				Combat combat = new Combat(aUnit, dUnit, getUnitContainer(attacker).getHp(), 
-						getUnitContainer(defender).getHp(), getTerrain(attacker), getTerrain(defender));
-				return combat;
+				if(!aUnit.isRanged() && attacker.isAdjacent(defender) || aUnit.isRanged() && this.getShootingRange(attacker).inRangeGlobal(defender)){
+					Combat combat = new Combat(aUnit, dUnit, getUnitContainer(attacker).getHp(), 
+							getUnitContainer(defender).getHp(), getTerrain(attacker), getTerrain(defender), aUnit.isRanged());
+					return combat;
+				}
 			}
 		}
 		return null;
+	}
+	
+	/** Sets the HP of the given Unit, if HP=0 Unit is removed, returns whether Unit is removed */
+	public boolean setUnitHp(Point unit, int hp){
+		if(getUnit(unit).isUnit()){
+			if(hp>0){
+				getUnitContainer(unit).setHp(hp);
+			}
+			else if(hp==0){
+				this.eraseUnit(unit);
+				return true;
+			}
+		}
+		else{
+			System.out.println("Unit to be changed HP upon is not existent");
+		}
+		return false;
 	}
 	
 	//Utility
@@ -155,6 +193,11 @@ public class Map {
 		return RangeExpander.calcShootingRange(this, unit);
 	}
 	
+	/** Erases Unit at the given location */
+	private void eraseUnit(Point unit){
+		this.units[unit.y][unit.x] = NO_UNIT;
+	}
+	
 	/** Returns deep clone of this map */
 	public Map clone(){
 		return new Map(width, height, terrain, units);
@@ -177,7 +220,7 @@ public class Map {
 	private static class UnitContainer{
 		@Getter private Unit type;
 		@Getter private Player owner;
-		@Getter private int hp;
+		@Setter @Getter private int hp;
 		/** Spawn Constructor */
 		public UnitContainer(Unit type, Player owner){
 			this.type = type;

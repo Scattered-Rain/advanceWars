@@ -135,6 +135,13 @@ public class Map {
 		return null;
 	}
 	
+	/** Calculates the Combat Event of the given variables. Have fun. */
+	public Combat calcCombat(Unit attacker, Unit defender, int hpAttacking, int hpDefending, Terrain tAttacking, Terrain tDefending){
+		boolean ranged = attacker.isRanged();
+		Combat combat = new Combat(attacker, defender, hpAttacking, hpDefending, tAttacking, tDefending, ranged);
+		return combat;
+	}
+	
 	/** Sets the HP of the given Unit, if HP=0 Unit is removed, returns whether Unit is removed */
 	public boolean setUnitHp(Point unit, int hp){
 		if(getUnit(unit).isUnit()){
@@ -212,6 +219,10 @@ public class Map {
 	//Debug
 	public void debugSpawnUnit(Unit unit, Player owner, Point point){
 		this.units[point.y][point.x] = new UnitContainer(unit, owner);
+	}
+	
+	public void debugSpawnUnit(UnitContainer unit, Point point){
+		this.units[point.y][point.x] = unit;
 	}
 	
 	public void debugEraseUnit(Point point){

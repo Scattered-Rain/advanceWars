@@ -11,19 +11,24 @@ public enum Direction {
 	LEFT(3);
 	
 	/** Defines the movement that each direction evokes on the X and Y plane {x, y} */
-	private static final int[][] DIR = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+	private static final Point[] DIR = new Point[]{new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)};
 	
 	/** Index of this direction */
 	@Getter private int index;
 	
 	/** Horizontal movement of this direction (X Plane) */
 	public int getX(){
-		return DIR[index][0];
+		return DIR[index].getX();
 	}
 	
 	/** Vertical movement of this direction (Y Plane) */
 	public int getY(){
-		return DIR[index][1];
+		return DIR[index].getY();
+	}
+	
+	/** Returns a Point containing vertical and horizontal movement corresponding to this direction */
+	public Point getDir(){
+		return DIR[index];
 	}
 	
 	/** Returns the direction 90 degrees clockwise from this direction */

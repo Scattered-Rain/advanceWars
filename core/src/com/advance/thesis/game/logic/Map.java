@@ -1,5 +1,8 @@
 package com.advance.thesis.game.logic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.advance.thesis.game.enums.Player;
 import com.advance.thesis.game.enums.Terrain;
 import com.advance.thesis.game.enums.Unit;
@@ -53,7 +56,7 @@ public class Map {
 		this.units = new UnitContainer[height][width];
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
-				terrain[cy][cx] = Terrain.getRandomTerrain();
+				terrain[cy][cx] = Terrain.PLAINS;//Terrain.getRandomTerrain();
 				units[cy][cx] = NO_UNIT;
 			}
 		}
@@ -181,8 +184,8 @@ public class Map {
 	}
 	
 	/** Returns Unit Container at given location */
-	public UnitContainer getUnitContainer(Point loc){
-		return units[loc.y][loc.x];
+	public UnitContainer getUnitContainer(Point point){
+		return units[point.y][point.x];
 	}
 	
 	/** Returns whether the given point is actually on the map */
@@ -208,6 +211,32 @@ public class Map {
 	/** Erases Unit at the given location */
 	private void eraseUnit(Point unit){
 		this.units[unit.y][unit.x] = NO_UNIT;
+	}
+	
+	/** Retruns a list of points containing all units belonging to the given player */
+	public List<Point> getAllUnitsOfPlayer(Player player){
+		List<Point> list = new ArrayList<Point>();
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = new Point(cx, cy);
+				if(this.getUnitContainer(loc).getOwner()==player){
+					list.add(loc);
+				}
+			}
+		}
+		return list;
+	}
+	
+	/** Returns which Player has won the game, or NONE if the game is still in progress (or a draw) */
+	public Player calcWinner(){
+		//TODO: Only works in narrow range of victory conditions, expand
+		Player[] players = new Player[]{Player.P0, Player.P1};
+		for(int c=0; c<players.length; c++){
+			if(getAllUnitsOfPlayer(players[c]).isEmpty()){
+				return players[(c+1)%players.length];
+			}
+		}
+		return Player.NONE;
 	}
 	
 	/** Returns deep clone of this map */

@@ -5,6 +5,7 @@ import com.advance.thesis.game.enums.Terrain;
 import com.advance.thesis.game.logic.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -42,6 +43,7 @@ public abstract class MapRenderer {
 		batch.begin();
 		for(int cy=0; cy<map.getHeight(); cy++){
 			for(int cx=0; cx<map.getWidth(); cx++){
+				batch.setColor(Color.WHITE);
 				renderTile(batch, cx, cy);
 			}
 		}

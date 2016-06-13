@@ -54,7 +54,7 @@ public class RangeCluster {
 	
 	
 	/** Returns whether the local coordinates given are in range */
-	public boolean inRange(int x, int y){
+	public boolean inRangeLocal(int x, int y){
 		if(checkBounds(x, y)){
 			return range[y][x] != OUT_OF_RANGE;
 		}
@@ -62,13 +62,13 @@ public class RangeCluster {
 	}
 	
 	/** Returns whether the local coordinates given are in range */
-	public boolean inRange(Point loc){
-		return inRange(loc.x, loc.y);
+	public boolean inRangeLocal(Point loc){
+		return inRangeLocal(loc.x, loc.y);
 	}
 	
 	/** Returns whether the global coordinates given are in range */
 	public boolean inRangeGlobal(int x, int y){
-		return inRange(x-mapLocation.getX(), y-mapLocation.getY());
+		return inRangeLocal(x-mapLocation.getX(), y-mapLocation.getY());
 	}
 	
 	/** Returns whether the global coordinates given are in range */
@@ -107,7 +107,7 @@ public class RangeCluster {
 	
 	/** Returns the value at the given local point, OUT_OF_RANGE if not legal */
 	public int getValueAtLocal(Point loc){
-		if(!this.inRange(loc)){
+		if(!this.inRangeLocal(loc)){
 			return OUT_OF_RANGE;
 		}
 		return this.range[loc.y][loc.x];
@@ -124,11 +124,13 @@ public class RangeCluster {
 		for(int cy=0; cy<height; cy++){
 			for(int cx=0; cx<width; cx++){
 				Point loc = new Point(cx, cy);
-				if(!loc.isIdentical(this.origin)){
-					loc = this.localToGlobal(loc);
-					Map.UnitContainer cont = map.getUnitContainer(loc);
-					if(cont.getType().isUnit()){
-						listicle.add(new Map.LocUnitContainer(cont, loc));
+				if(this.inRangeLocal(loc)){
+					if(!loc.isIdentical(this.origin)){
+						loc = this.localToGlobal(loc);
+						Map.UnitContainer cont = map.getUnitContainer(loc);
+						if(cont.getType().isUnit()){
+							listicle.add(new Map.LocUnitContainer(cont, loc));
+						}
 					}
 				}
 			}

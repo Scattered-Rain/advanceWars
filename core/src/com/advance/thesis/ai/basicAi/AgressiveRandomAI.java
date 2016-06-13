@@ -21,35 +21,40 @@ public class AgressiveRandomAI extends AbstractAI{
 	
 	/** Enacts the actual ai behaviour upon the map */
 	@Override protected void doProcess() {
-		Iterator<LocUnitContainer> units = super.controller.getStillMovableUnits().iterator();
-		while(units.hasNext()){
-			LocUnitContainer unit = units.next();
-			Point loc = unit.getLocation();
-			boolean ranged = unit.getUnitCont().getType().isRanged();
-			if(ranged){
-				List<LocUnitContainer> attackables = controller.getAttackableUnits(loc);
-				//Shoot Unit in range
-				if(attackables.size()>0){
-					LocUnitContainer toAttack = attackables.get(bestRangeAttackableUnit(attackables));
-					controller.doCombat(loc, toAttack.getLocation());
-				}
-				//Move Somewhere
-				else{
-					controller.move(loc, controller.getMap().getMovementRange(loc).getRandLegalPoint());
-				}
+		Object[] units = super.controller.getStillMovableUnits().toArray();
+		for(int c=0; c<units.length; c++){
+			LocUnitContainer unit = (LocUnitContainer)units[c];
+			processUnit(unit);
+		}
+	}
+	
+	/** Processes Action for singular unit */
+	private void processUnit(LocUnitContainer unit){
+		Point loc = unit.getLocation();
+		boolean ranged = unit.getUnitCont().getType().isRanged();
+		if(ranged){
+			List<LocUnitContainer> attackables = controller.getAttackableUnits(loc);
+			//Shoot Unit in range
+			if(attackables.size()>0){
+				LocUnitContainer toAttack = attackables.get(bestRangeAttackableUnit(attackables));
+				controller.doCombat(loc, toAttack.getLocation());
+			}
+			//Move Somewhere
+			else{
+				controller.move(loc, controller.getMap().getMovementRange(loc).getRandLegalPoint());
+			}
+		}
+		else{
+			List<List<Tuple<Point>>> attackables = controller.getAttackableUnitsCloseRange(loc);
+			if(attackables.size()>0){
+				//Move and attack a unit in range
+				List<Tuple<Point>> toAttack = attackables.get(bestCloseAttackableUnit(attackables));
+				int dir = GameConstants.RANDOM.nextInt(toAttack.size());
+				controller.moveAndDoCombat(loc, toAttack.get(dir).getA(), toAttack.get(dir).getB());
 			}
 			else{
-				List<List<Tuple<Point>>> attackables = controller.getAttackableUnitsCloseRange(loc);
-				if(attackables.size()>0){
-					//Move and attack a unit in range
-					List<Tuple<Point>> toAttack = attackables.get(bestCloseAttackableUnit(attackables));
-					int dir = GameConstants.RANDOM.nextInt(toAttack.size());
-					controller.moveAndDoCombat(loc, toAttack.get(dir).getA(), toAttack.get(dir).getB());
-				}
-				else{
-					//Move somewhere
-					controller.move(loc, controller.getMap().getMovementRange(loc).getRandLegalPoint());
-				}
+				//Move somewhere
+				controller.move(loc, controller.getMap().getMovementRange(loc).getRandLegalPoint());
 			}
 		}
 	}

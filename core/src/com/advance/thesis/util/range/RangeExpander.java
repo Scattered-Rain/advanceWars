@@ -36,13 +36,13 @@ public abstract class RangeExpander {
 		int height = mov.getHeight()+2;
 		if(dirMapBord[Direction.RIGHT.getIndex()]){width--;}
 		if(dirMapBord[Direction.LEFT.getIndex()]){
-			mapLocation.add(1, 0);
-			origin.add(-1, 0);
+			mapLocation = mapLocation.add(1, 0);
+			origin = origin.add(-1, 0);
 			width--;
 		}
 		if(dirMapBord[Direction.UP.getIndex()]){
-			mapLocation.add(0, 1);
-			origin.add(0, -1);
+			mapLocation = mapLocation.add(0, 1);
+			origin = origin.add(0, -1);
 			height--;
 		}
 		if(dirMapBord[Direction.DOWN.getIndex()]){height--;}
@@ -66,7 +66,7 @@ public abstract class RangeExpander {
 					newCluster[cy][cx] = RangeCluster.OUT_OF_RANGE;
 					for(int c=0; c<Direction.values().length; c++){
 						Direction dir = Direction.values()[c];
-						if(mov.inRange(new Point(xOrig+dir.getX(), yOrig+dir.getY()))){
+						if(mov.inRangeLocal(new Point(xOrig+dir.getX(), yOrig+dir.getY()))){
 							newCluster[cy][cx] = 0;
 							break;
 						}
@@ -74,7 +74,8 @@ public abstract class RangeExpander {
 				}
 			}
 		}
-		return new RangeCluster(newCluster, mapLocation, origin);
+		RangeCluster out = new RangeCluster(newCluster, mapLocation, origin);
+		return out;
 	}
 	
 	

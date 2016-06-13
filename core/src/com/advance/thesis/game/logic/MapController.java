@@ -30,8 +30,9 @@ public class MapController {
 	@Getter private List<LocUnitContainer> stillMovableUnits;
 	
 	/** Constructs new Map Controller */
-	public MapController(Map map){
+	public MapController(Map map, Player player){
 		this.map = map;
+		this.player = player;
 		this.units = new ArrayList<Map.LocUnitContainer>();
 		this.stillMovableUnits = new ArrayList<Map.LocUnitContainer>();
 		refreshUnits();
@@ -86,7 +87,7 @@ public class MapController {
 			Point contLoc = cont.getLocation();
 			for(int c2=0; c2<Direction.values().length; c2++){
 				Point standOn = contLoc.add(Direction.values()[c2].getDir());
-				if(cluster.inRange(standOn)){
+				if(cluster.inRangeGlobal(standOn)){
 					dirList.add(new Tuple<Point>(standOn, contLoc));
 				}
 			}

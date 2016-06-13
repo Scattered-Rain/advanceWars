@@ -38,7 +38,7 @@ public class MapController {
 	}
 	
 	/** Resets Units and Movable Units list to get it up to date */
-	private void refreshUnits(){
+	public void refreshUnits(){
 		this.units.clear();
 		this.stillMovableUnits.clear();
 		for(int cy=0; cy<map.getHeight(); cy++){
@@ -151,7 +151,7 @@ public class MapController {
 	}
 	
 	//Utility
-	/** Returns index of the given unit in the movability list, if it's not contained -1 */
+	/** Returns index of the given unit in the stillMovable list, if it's not contained returns -1 (i.e. stillMovabilit = !-1)*/
 	private int getStillMovable(Point unit){
 		for(int c=0; c<this.stillMovableUnits.size(); c++){
 			if(stillMovableUnits.get(c).getLocation().isIdentical(unit)){

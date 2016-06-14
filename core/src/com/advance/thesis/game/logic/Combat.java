@@ -32,6 +32,10 @@ public class Combat {
 	/** Calculates outcome of combat */
 	private void calcResult(){
 		int firstStrikeDamage = calcStrike(units, terrain, hp);
+		if(firstStrikeDamage<1){
+			//If no damage is inflicted by attacker, miniscule damage is afflicted by attacker
+			firstStrikeDamage = 1;
+		}
 		hp.setB(Math.max(hp.getB()-firstStrikeDamage, 0));
 		int retDamage = 0;
 		if(hp.getB()>0 && !ranged && !units.getB().isRanged()){

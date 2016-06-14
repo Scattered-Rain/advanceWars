@@ -16,7 +16,8 @@ import lombok.Setter;
 
 public class Map {
 	
-	private static final UnitContainer NO_UNIT = new UnitContainer(Unit.NONE, Player.NONE, -1);
+	/** Unit used to indicate the lack of a unit */
+	public static final UnitContainer NO_UNIT = new UnitContainer(Unit.NONE, Player.NONE, -1);
 	
 	/** The dimensions of the map */
 	@Getter private int width;
@@ -34,7 +35,7 @@ public class Map {
 	}
 	
 	/** Constructs new Map based on raw values (for cloning) */
-	private Map(int width, int height, Terrain[][] terrain, UnitContainer[][] units){
+	public Map(int width, int height, Terrain[][] terrain, UnitContainer[][] units){
 		this.width = width;
 		this.height = height;
 		this.terrain = new Terrain[height][width];

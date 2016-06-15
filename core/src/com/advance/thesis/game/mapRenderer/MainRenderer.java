@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
-public class GameRenderer extends MapRenderer{
+public class MainRenderer extends MapRenderer{
 	
 	
 	/** Constructs new GameRenderer */
-	public GameRenderer(Map map){
+	public MainRenderer(Map map){
 		super(map);
 	}
 	

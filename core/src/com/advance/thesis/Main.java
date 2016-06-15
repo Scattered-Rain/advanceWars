@@ -17,7 +17,7 @@ import com.advance.thesis.game.logic.Map;
 import com.advance.thesis.game.logic.Map.UnitContainer;
 import com.advance.thesis.game.logic.MapController;
 import com.advance.thesis.game.logic.TiledMapFactory;
-import com.advance.thesis.game.mapRenderer.GameRenderer;
+import com.advance.thesis.game.mapRenderer.MainRenderer;
 import com.advance.thesis.game.mapRenderer.MapRenderer;
 import com.advance.thesis.util.Direction;
 import com.advance.thesis.util.Point;
@@ -43,7 +43,7 @@ public class Main extends ApplicationAdapter {
 		this.size = 8;
 		newMap(size);
 		this.ais = new AbstractAI[]{new AgressiveRandomAI(new MapController(map, Player.P0)), new AgressiveRandomAI(new MapController(map, Player.P1))};
-		this.renderer = new GameRenderer(map);
+		this.renderer = new MainRenderer(map);
 	}
 	
 	private void newMap(int size){
@@ -61,7 +61,7 @@ public class Main extends ApplicationAdapter {
 			this.newMap(size);
 			this.ais = new AbstractAI[]{new AgressiveRandomAI(new MapController(map, Player.P0)), new AgressiveRandomAI(new MapController(map, Player.P1))};
 			this.renderer.dispose();
-			this.renderer = new GameRenderer(map);
+			this.renderer = new MainRenderer(map);
 			System.out.println(wins[0]+" "+wins[1]);
 		}
 		try{Thread.sleep(0);}catch(Exception ex){}

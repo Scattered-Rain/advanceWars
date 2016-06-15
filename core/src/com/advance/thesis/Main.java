@@ -32,6 +32,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 /** Main Node for the Game on its own. */
 public class Main extends ApplicationAdapter {
 	
+	public static Main main;
+	
 	private Map map;
 	private MapRenderer renderer;
 	private int size;
@@ -40,6 +42,7 @@ public class Main extends ApplicationAdapter {
 	
 	
 	@Override public void create () {
+		main = this;
 		this.size = 8;
 		newMap(size);
 		this.ais = new AbstractAI[]{new AgressiveRandomAI(new MapController(map, Player.P0)), new AgressiveRandomAI(new MapController(map, Player.P1))};
@@ -60,12 +63,20 @@ public class Main extends ApplicationAdapter {
 			wins[map.calcWinner().getId()]++;
 			this.newMap(size);
 			this.ais = new AbstractAI[]{new AgressiveRandomAI(new MapController(map, Player.P0)), new AgressiveRandomAI(new MapController(map, Player.P1))};
-			this.renderer.dispose();
-			this.renderer = new MainRenderer(map);
-			System.out.println(wins[0]+" "+wins[1]);
+			resetRenderer();
 		}
 		try{Thread.sleep(0);}catch(Exception ex){}
 		renderer.render();
+	}
+	
+	public static void resetRenderer(){
+		main.renderer.dispose();
+		main.renderer = new MainRenderer(main.map);
+	}
+	
+	public static void setRenderer(MapRenderer renderer){
+		main.renderer.dispose();
+		main.renderer = renderer;
 	}
 	
 }

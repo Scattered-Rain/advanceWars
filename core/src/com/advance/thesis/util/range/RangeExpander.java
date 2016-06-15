@@ -1,8 +1,10 @@
 package com.advance.thesis.util.range;
 
+import com.advance.thesis.Main;
 import com.advance.thesis.game.enums.MoveType;
 import com.advance.thesis.game.enums.Unit;
 import com.advance.thesis.game.logic.Map;
+import com.advance.thesis.game.mapRenderer.RangeClusterRenderer;
 import com.advance.thesis.util.Direction;
 import com.advance.thesis.util.Point;
 
@@ -75,6 +77,7 @@ public abstract class RangeExpander {
 			}
 		}
 		RangeCluster out = new RangeCluster(newCluster, mapLocation, origin);
+		Main.setRenderer(new RangeClusterRenderer(map, out));
 		return out;
 	}
 	

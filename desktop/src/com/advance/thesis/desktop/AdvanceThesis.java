@@ -12,11 +12,10 @@ public class AdvanceThesis {
 		config.resizable = false;
 		config.title = "Advance Thesis";
 		config.fullscreen = false;
-		//config.width = config.getDesktopDisplayMode().width/2;
-		//config.height = config.getDesktopDisplayMode().height/2;
 		config.width = 16*16*2;
 		config.height = 16*16*2;
-		new LwjglApplication(new Main(), config);
+		Main map = new Main();
+		new LwjglApplication(map, config);
 	}
 	
 	private static void pack(){

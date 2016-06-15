@@ -44,6 +44,7 @@ public abstract class MapRenderer {
 		for(int cy=0; cy<map.getHeight(); cy++){
 			for(int cx=0; cx<map.getWidth(); cx++){
 				batch.setColor(Color.WHITE);
+				GameConstants.FONT.setColor(Color.WHITE);
 				renderTile(batch, cx, cy);
 			}
 		}

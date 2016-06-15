@@ -26,8 +26,7 @@ public class MainRenderer extends MapRenderer{
 				batch.setColor(Color.BLUE);
 			}
 			batch.draw(toDraw, calcX(x, 0), calcY(y, 0));
-			batch.setColor(Color.WHITE);
-			GameConstants.FONT.draw(batch, ""+map.getUnitContainer(new Point(x, y)).getHp(), calcX(x, 0), calcY(y, 0));
+			GameConstants.FONT.draw(batch, ""+map.getUnitContainer(new Point(x, y)).getHp(), calcX(x, 0), calcY(y-1, 0));
 		}
 	}
 	

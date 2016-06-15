@@ -1,5 +1,6 @@
 package com.advance.thesis.game.mapRenderer;
 
+import com.advance.thesis.game.GameConstants;
 import com.advance.thesis.game.enums.Player;
 import com.advance.thesis.game.enums.Terrain;
 import com.advance.thesis.game.logic.Map;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 
 public class MainRenderer extends MapRenderer{
-	
 	
 	/** Constructs new GameRenderer */
 	public MainRenderer(Map map){
@@ -26,6 +26,8 @@ public class MainRenderer extends MapRenderer{
 				batch.setColor(Color.BLUE);
 			}
 			batch.draw(toDraw, calcX(x, 0), calcY(y, 0));
+			batch.setColor(Color.WHITE);
+			GameConstants.FONT.draw(batch, ""+map.getUnitContainer(new Point(x, y)).getHp(), calcX(x, 0), calcY(y, 0));
 		}
 	}
 	

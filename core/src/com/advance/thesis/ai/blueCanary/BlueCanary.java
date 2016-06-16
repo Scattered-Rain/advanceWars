@@ -2,6 +2,9 @@ package com.advance.thesis.ai.blueCanary;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.advance.thesis.Main;
 import com.advance.thesis.ai.AbstractAI;
 import com.advance.thesis.game.logic.MapController;
@@ -12,7 +15,7 @@ import com.advance.thesis.util.range.RangeCluster;
 public class BlueCanary extends AbstractAI{
 	
 	/** The Neural core of the Canary */
-	private Neurals neurals;
+	@Getter @Setter private Neurals neurals;
 	
 	/** Constructs New Instance of blueCanary */
 	public BlueCanary(MapController controller) {

@@ -20,7 +20,7 @@ public class NeuralBreeder {
 		for(int c=0; c<attack.length; c++){
 			attack[c] = mutate(parents[getRand()].getAttack()[c]);
 		}
-		return null;
+		return new Neurals(move, attack, shoot);
 	}
 	
 	/** Returns either 0 or 1 */

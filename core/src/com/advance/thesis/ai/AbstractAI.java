@@ -19,6 +19,11 @@ public abstract class AbstractAI{
 		doProcess();
 	}
 	
+	/** Set new Controller */
+	public void setController(MapController controller){
+		this.controller = controller;
+	}
+	
 	/** Encodes the actual processing of the AI */
 	protected abstract void doProcess();
 	

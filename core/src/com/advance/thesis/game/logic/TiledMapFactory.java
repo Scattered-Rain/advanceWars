@@ -44,6 +44,7 @@ public class TiledMapFactory {
 				unitArray[cy][cx] = unit;
 			}
 		}
+		tiledMap.dispose();
 		return new Map(width, height, terrainArray, unitArray);
 	}
 	

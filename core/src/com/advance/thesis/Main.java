@@ -57,20 +57,21 @@ public class Main extends ApplicationAdapter {
 	}
 	
 	@Override public void render(){
-		
-		for(int c=0; c<ais.length; c++){
-			//System.out.println("Player "+c+"'s Move");
-			ais[c].process();
-		}
-		if(!map.calcWinner().equals(Player.NONE)){
-			this.wins[map.calcWinner().getId()]++;
-			System.out.println(wins[0]+" "+wins[1]);
-			this.newMap(size);
-			setAi();
-			resetRenderer();
-		}
-		try{Thread.sleep(0);}catch(Exception ex){}
-		renderer.render();
+		//while(true){
+			for(int c=0; c<ais.length; c++){
+				//System.out.println("Player "+c+"'s Move");
+				ais[c].process();
+			}
+			if(!map.calcWinner().equals(Player.NONE)){
+				this.wins[map.calcWinner().getId()]++;
+				System.out.println(wins[0]+" "+wins[1]);
+				this.newMap(size);
+				setAi();
+				resetRenderer();
+			}
+			try{Thread.sleep(0);}catch(Exception ex){}
+			renderer.render();
+		//}
 	}
 	
 	private void setAi(){

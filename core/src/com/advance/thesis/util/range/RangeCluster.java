@@ -139,6 +139,21 @@ public class RangeCluster {
 		return listicle;
 	}
 	
+	/** Returns list of all Units on the map that are within this cluster (not including the origin) */
+	public List<Point>getAllPointsInRange(Map map){
+		List<Point> listicle = new ArrayList<Point>();
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = new Point(cx, cy);
+				if(this.inRangeLocal(loc)){
+					loc = this.localToGlobal(loc);
+					listicle.add(loc);
+				}
+			}
+		}
+		return listicle;
+	}
+	
 	/** Sets value at global location to the given value */
 	public void localSetValue(Point loc, int value){
 		this.range[loc.getY()][loc.getX()] = value;

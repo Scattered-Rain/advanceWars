@@ -33,7 +33,7 @@ public class AgressiveRandomAI extends AbstractAI{
 		Point loc = unit.getLocation();
 		boolean ranged = unit.getUnitCont().getType().isRanged();
 		if(ranged){
-			List<LocUnitContainer> attackables = controller.getAttackableUnits(loc);
+			List<LocUnitContainer> attackables = controller.getAttackableUnits(loc, controller.getPlayer());
 			//Shoot Unit in range
 			if(attackables.size()>0){
 				LocUnitContainer toAttack = attackables.get(bestRangeAttackableUnit(attackables));

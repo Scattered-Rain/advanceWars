@@ -55,7 +55,7 @@ public class MapController {
 	}
 	
 	/** Returns a list of all units within attacking range of the given unit that do not belong to this Player */
-	public List<LocUnitContainer> getAttackableUnits(Point loc){
+	public List<LocUnitContainer> getAttackableUnits(Point loc, Player playur){
 		UnitContainer unit = map.getUnitContainer(loc);
 		RangeCluster range = null;
 		if(!unit.getType().isRanged()){
@@ -66,7 +66,7 @@ public class MapController {
 		}
 		List<LocUnitContainer> units = range.getAllUnitsInRange(map);
 		for(int c=0; c<units.size(); c++){
-			if(units.get(c).getUnitCont().getOwner().equals(this.player)){
+			if(units.get(c).getUnitCont().getOwner().equals(playur)){
 				units.remove(c);
 				c--;
 			}
@@ -78,7 +78,7 @@ public class MapController {
 	 	all possible directions that can be attacked from as represented with a Tuple that stores the target location of the attack 
 	 	at index 1 and the position the given unit has to attack from at index 0 */
 	public List<List<Tuple<Point>>> getAttackableUnitsCloseRange(Point loc){
-		List<LocUnitContainer> list = getAttackableUnits(loc);
+		List<LocUnitContainer> list = getAttackableUnits(loc, this.player);
 		List<List<Tuple<Point>>> out = new ArrayList<List<Tuple<Point>>>();
 		RangeCluster cluster = map.getMovementRange(loc);
 		for(int c=0; c<list.size(); c++){
@@ -133,7 +133,7 @@ public class MapController {
 	public Combat moveAndDoCombat(Point unit, Point moveTo, Point defender){
 		int stillMovable = getStillMovable(unit);
 		if(stillMovable>=0){
-			if(!map.getUnit(unit).isRanged() || unit.isIdentical(moveTo)){
+			if(!map.getUnit(unit).isRanged() || unit.equals(moveTo)){
 				if(map.checkMoveLegality(unit, moveTo)){
 					UnitContainer help = map.getUnitContainer(moveTo);
 					map.debugSpawnUnit(map.getUnitContainer(unit), moveTo);
@@ -155,7 +155,7 @@ public class MapController {
 	/** Returns index of the given unit in the stillMovable list, if it's not contained returns -1 (i.e. stillMovabilit = !-1)*/
 	private int getStillMovable(Point unit){
 		for(int c=0; c<this.stillMovableUnits.size(); c++){
-			if(stillMovableUnits.get(c).getLocation().isIdentical(unit)){
+			if(stillMovableUnits.get(c).getLocation().equals(unit)){
 				return c;
 			}
 		}

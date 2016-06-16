@@ -58,7 +58,7 @@ public enum Unit {
 	
 	/** Retruns whether this Unit is Ranged */
 	public boolean isRanged(){
-		return !this.shootingRange.isIdentical(new Point(0, 0));
+		return !this.shootingRange.equals(new Point(0, 0));
 	}
 	
 	

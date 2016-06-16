@@ -26,7 +26,7 @@ public class RangeClusterRenderer extends MapRenderer{
 		if(cluster.inRangeGlobal(x, y)){
 			inRange = true;
 			batch.setColor(Color.BLUE);
-			if(cluster.localToGlobal(cluster.getOrigin()).isIdentical(new Point(x, y))){
+			if(cluster.localToGlobal(cluster.getOrigin()).equals(new Point(x, y))){
 				batch.setColor(Color.CYAN);
 			}
 		}

@@ -92,7 +92,7 @@ public class Map {
 			return false;
 		}
 		if(!(this.getUnit(origin).isUnit() && !this.getUnit(target).isUnit())){
-			if(!origin.isIdentical(target)){
+			if(!origin.equals(target)){
 				System.out.println("Movement obscured");
 				return false;
 			}

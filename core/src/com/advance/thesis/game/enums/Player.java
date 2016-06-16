@@ -21,4 +21,16 @@ public enum Player {
 		return this.id==p.getId();
 	}
 	
+	public Player getOpponent(){
+		if(id==-1){
+			return NONE;
+		}
+		else if(id==0){
+			return P1;
+		}
+		else{
+			return P0;
+		}
+	}
+	
 }

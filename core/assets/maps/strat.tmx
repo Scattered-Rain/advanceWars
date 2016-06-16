@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="16" tileheight="16" nextobjectid="1">
+ <tileset firstgid="1" source="mapBase.tsx"/>
+ <layer name="terrain" width="10" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgYELCzFDMhAWDxFmgGCYG4zOjibFCMUwMxkfXCxJjRLKXkQrqCNlLrD+ICRcAlpgA7Q==
+  </data>
+ </layer>
+ <layer name="units" width="10" height="8">
+  <data encoding="base64" compression="zlib">
+   eJzjZmBg4GLADYSAWBiIOYlQJwhl8+JRJ4rG58GjlhAQQeMTYy+x/uAmQh0oXADIeAFF
+  </data>
+ </layer>
+</map>

@@ -77,7 +77,6 @@ public abstract class RangeExpander {
 			}
 		}
 		RangeCluster out = new RangeCluster(newCluster, mapLocation, origin);
-		Main.setRenderer(new RangeClusterRenderer(map, out));
 		return out;
 	}
 	

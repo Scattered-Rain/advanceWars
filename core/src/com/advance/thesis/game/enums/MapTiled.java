@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 /** Represents Maps that are loaded in via Tiled */
 public enum MapTiled {
-	DEFAULT(0, "Default Map", "default");
+	DEFAULT(0, "Default Map", "default"),
+	STRAT(1, "Strategoish Map", "strat");
 	@Getter private int id;
 	@Getter private String name;
 	@Getter private String localPath;

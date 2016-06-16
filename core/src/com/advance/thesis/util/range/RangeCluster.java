@@ -14,6 +14,7 @@ public class RangeCluster {
 	
 	/** The number indicating out of range-ness */
 	public static final int OUT_OF_RANGE = -1;
+	public static final int BINARY_IN_RANGE = 1;
 	
 	/** The origin point of the Range Cluster on the map (0|0 for the cluster) */
 	@Getter private Point mapLocation;
@@ -29,7 +30,7 @@ public class RangeCluster {
 	private int[][] range;
 	
 	
-	protected RangeCluster(int[][] range, Point mapLocation, Point origin){
+	public RangeCluster(int[][] range, Point mapLocation, Point origin){
 		this.mapLocation = mapLocation;
 		this.origin = origin;
 		this.range = range;
@@ -125,7 +126,7 @@ public class RangeCluster {
 			for(int cx=0; cx<width; cx++){
 				Point loc = new Point(cx, cy);
 				if(this.inRangeLocal(loc)){
-					if(!loc.isIdentical(this.origin)){
+					if(!loc.equals(this.origin)){
 						loc = this.localToGlobal(loc);
 						Map.UnitContainer cont = map.getUnitContainer(loc);
 						if(cont.getType().isUnit()){
@@ -136,6 +137,82 @@ public class RangeCluster {
 			}
 		}
 		return listicle;
+	}
+	
+	/** Sets value at global location to the given value */
+	public void localSetValue(Point loc, int value){
+		this.range[loc.getY()][loc.getX()] = value;
+	}
+	
+	/** Sets given value at given Point */
+	public void globalSetValue(Point loc, int value){
+		localSetValue(globalToLocal(loc), value);
+	}
+	
+	//RangeCluster math operations:
+	/** Sets any value in range to 1 */
+	public RangeCluster makeBinary(){
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = this.localToGlobal(new Point(cx, cy));
+				if(this.inRangeGlobal(loc)){
+					this.range[cy][cx] = RangeCluster.BINARY_IN_RANGE;
+				}
+			}
+		}
+		return this;
+	}
+	
+	/** Adds the values of the given cluster to this one, in binary fashion, so that any field that is in either becomes 1 (does not exceed this' borders) */
+	public RangeCluster binaryAdd(RangeCluster cluster){
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = this.localToGlobal(new Point(cx, cy));
+				if(this.inRangeGlobal(loc) || cluster.inRangeGlobal(loc)){
+					this.range[cy][cx] = RangeCluster.BINARY_IN_RANGE;
+				}
+			}
+		}
+		return this;
+	}
+	
+	public RangeCluster binarySubstract(RangeCluster cluster){
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = this.localToGlobal(new Point(cx, cy));
+				if(this.inRangeGlobal(loc) && !cluster.inRangeGlobal(loc)){
+					this.range[cy][cx] = RangeCluster.BINARY_IN_RANGE;
+				}
+				else{
+					this.range[cy][cx] = RangeCluster.OUT_OF_RANGE;
+				}
+			}
+		}
+		return this;
+	}
+	
+	public RangeCluster numericAdd(int scaleThis, RangeCluster cluster, int scaleCluster){
+		for(int cy=0; cy<height; cy++){
+			for(int cx=0; cx<width; cx++){
+				Point loc = this.localToGlobal(new Point(cx, cy));
+				if(this.inRangeGlobal(loc) && cluster.inRangeGlobal(loc)){
+					this.range[cy][cx] = scaleThis*this.getValueAtGlobal(loc)+scaleCluster*cluster.getValueAtGlobal(loc);
+				}
+				else if(!this.inRangeGlobal(loc) && cluster.inRangeGlobal(loc)){
+					this.range[cy][cx] = scaleCluster*cluster.getValueAtGlobal(loc);
+				}
+				else if(this.inRangeGlobal(loc) && !cluster.inRangeGlobal(loc)){
+					this.range[cy][cx] = scaleThis*this.getValueAtGlobal(loc);
+				}
+				else{
+					this.range[cy][cx] = RangeCluster.OUT_OF_RANGE;
+				}
+				if(this.range[cy][cx]==0){
+					System.out.println("WTF?");
+				}
+			}
+		}
+		return this;
 	}
 	
 	/** Returns deep clone of this Range Cluster */

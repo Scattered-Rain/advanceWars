@@ -49,7 +49,7 @@ public class Point{
 	}
 	
 	/** Returns whether the given Point is identical to this Point */
-	public boolean isIdentical(Point other){
+	public boolean equals(Point other){
 		return this.x==other.x && this.y==other.y;
 	}
 	

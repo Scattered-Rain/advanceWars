@@ -9,7 +9,7 @@ import com.advance.thesis.ai.AbstractAI;
 import com.advance.thesis.ai.basicAi.AgressiveRandomAI;
 import com.advance.thesis.ai.blueCanary.BlueCanary;
 import com.advance.thesis.ai.blueCanary.CanaryBreeder;
-import com.advance.thesis.ai.blueCanary.NeuralBreeder;
+import com.advance.thesis.ai.blueCanary.Crossover;
 import com.advance.thesis.ai.blueCanary.Neurals;
 import com.advance.thesis.game.GameConstants;
 import com.advance.thesis.game.enums.MapTiled;

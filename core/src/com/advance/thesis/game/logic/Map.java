@@ -19,6 +19,9 @@ public class Map {
 	/** Unit used to indicate the lack of a unit */
 	public static final UnitContainer NO_UNIT = new UnitContainer(Unit.NONE, Player.NONE, -1);
 	
+	/** Utility variable, set to current turn when needed */
+	@Setter @Getter private int turn = 0;
+	
 	/** The dimensions of the map */
 	@Getter private int width;
 	@Getter private int height;

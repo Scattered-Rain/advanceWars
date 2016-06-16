@@ -2,9 +2,9 @@ package com.advance.thesis.ai.blueCanary;
 
 import com.advance.thesis.game.GameConstants;
 
-public class NeuralBreeder {
+public class Crossover {
 	
-	private static final float MUTATION_RATE = 0.01f;
+	private static final float MUTATION_RATE = 0.005f;//Around 0.005 seems to yield rather nice results
 	
 	public static Neurals breed(Neurals mother, Neurals father){
 		Neurals[] parents = new Neurals[]{mother, father};
@@ -25,12 +25,13 @@ public class NeuralBreeder {
 	
 	/** Returns either 0 or 1 */
 	private static int getRand(){
-		return GameConstants.RANDOM.nextInt(2);
+		int i = GameConstants.RANDOM.nextInt(2);
+		return i;
 	}
 	
 	private static float mutate(float value){
 		if(GameConstants.RANDOM.nextDouble()<MUTATION_RATE){
-			value += (GameConstants.RANDOM.nextDouble()*2)-1;
+			value += ((GameConstants.RANDOM.nextDouble()*2-1)*0.5f);
 			value = Math.max(value, 1);
 			value = Math.min(value, -1);
 		}

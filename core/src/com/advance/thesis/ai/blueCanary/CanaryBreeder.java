@@ -3,6 +3,9 @@ package com.advance.thesis.ai.blueCanary;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import com.advance.thesis.ai.AbstractAI;
 import com.advance.thesis.ai.basicAi.AgressiveRandomAI;
@@ -23,17 +26,20 @@ public class CanaryBreeder {
 	private static final int REPETITIONS = 5;
 	
 	/** Size of the population */
-	private static final int POPULATION_SIZE = 16;
+	private static final int POPULATION_SIZE = 25;
 	/** Size of the Elite */
-	private static final int ELITE = 4;
+	private static final int ELITE = 8;
 	/** Index of where random canaries are added into the population */
-	private static final int SPAWN = 16-2;
+	private static final int SPAWN = POPULATION_SIZE-4;
 	
 	/** The AI against which each AI is tested */
-	private static final AbstractAI CHALLENGER = new  AgressiveRandomAI(null);
+	private static AbstractAI CHALLENGER = new  AgressiveRandomAI(null);
 	
 	/** Map that can be used to gain a glance at the breeding */
 	@Getter private Map window;
+	
+	/** Tracker for syso purposes */
+	private Tracker tracker;
 	
 	/** The map that all games are executed on */
 	private Map trainingGrounds;
@@ -49,6 +55,7 @@ public class CanaryBreeder {
 	/** The entire population of Canaries */
 	private BirdHouse[] population;
 	
+	
 	/** Constructs new Canary Breeder */
 	public CanaryBreeder(Map trainingMap){
 		this.window = new Map(1, 1);
@@ -57,53 +64,103 @@ public class CanaryBreeder {
 		this.currentGen = 0;
 		this.trainingGrounds = trainingMap;
 		this.population = new BirdHouse[POPULATION_SIZE];
-		spawnFrom(0);
+		spawnFrom(0, false);
+		this.tracker = new Tracker(population[0], Float.NEGATIVE_INFINITY);
 	}
 	
 	/** Processes the generational loop */
 	public void process(){
-		BirdHouse topChicken = population[0];
-		float topScore = Float.NEGATIVE_INFINITY;
 		while(true){
+			gameStep();
+			track();
 			genStep();
-			System.out.println("Gen: "+currentGen+" | Canary: "+cScore[0]+" | Challenger: "+cScore[1]+" | Draw: "+cScore[2]+" | Ratio:  "+((float)cScore[0])/((float)cScore[1])+" | Top Elite: "+population[0].getScore()+" | Top Score: "+topScore);
-			if(topScore<population[0].getScore()){
-				topChicken = population[0];
-				topScore = topChicken.getScore();
-				System.out.println();
-				System.out.println("New Top Chicken!");
-				System.out.println(topChicken.getCanary().getNeurals());
-				System.out.println();
-			}
+//			if(currentGen<40){
+//				this.CHALLENGER = population[0].getCanary();
+//			}
+//			else if(currentGen==40){
+//				System.out.println("\n\nCanary Peace Declared\n\n");
+//				this.CHALLENGER = new  AgressiveRandomAI(null);
+//			}
 		}
 	}
 	
-	/** Processes an entire generation */
-	public void genStep(){
-		//Let's Game!
+	/** Does nice printouts */
+	private void track(){
+		System.out.println("Gen: "+currentGen+" | Canary: "+cScore[0]+" | Foes: "+cScore[1]+" | Draw: "+cScore[2]+" | Ratio:  "+((float)cScore[0])/((float)cScore[1])+" | GenWins: "+calcGenWins()+"/"+(POPULATION_SIZE-ELITE)*REPETITIONS+" | BestTime: "+getBestTime()+" | TopGen: "+bestCurrentGenner().getScore()+" | TopPop: "+population[0].getScore()+" | TopScore: "+tracker.getTopScore());
+		if(tracker.getTopScore()<population[0].getScore()){
+			tracker.setTopChicken(population[0]);
+			tracker.setTopScore(tracker.getTopChicken().getScore());
+			System.out.println();
+			System.out.println("New Top Chicken!");
+			System.out.println(tracker.getTopChicken().getCanary().getNeurals());
+			System.out.println();
+		}
+	}
+	
+	/** Returns the win/loss ratio of the current generation */
+	private int calcGenWins(){
+		int played = 0;
+		int wins = 0;
 		for(int c=0; c<population.length; c++){
-			BirdHouse bird = population[c];
-			if(!bird.hasScore()){
-				float score = 0;
-				for(int c2=0; c2<REPETITIONS; c2++){
-					score += scoreCanary(bird, testChallenger(bird));
-				}
-				score = score/REPETITIONS;
-				bird.setScore(score);
+			if(population[c].hasPlayed){
+				wins += population[c].hasWon;
+				played++;
 			}
 		}
-		//let's Breed!
-		sortPopulation();
-		breedFrom(ELITE);
-		spawnFrom(SPAWN);
+		return wins;
+	}
+	
+	/** Returns best amount of turns needed to complete in generation */
+	private float getBestTime(){
+		float best = Float.POSITIVE_INFINITY;
+		for(int c=0; c<population.length; c++){
+			if(population[c].hasPlayed){
+				if(population[c].getAvgTime()<best){
+					best = population[c].getAvgTime();
+				}
+			}
+		}
+		return best;
+	}
+	
+	/** evaluates an entire generation */
+	private void gameStep(){
+		final float SCORE_DEVALUING = 0.05f;
+		for(int c=0; c<population.length; c++){
+			BirdHouse bird = population[c];
+			bird.setHasPlayed(false);
+			if(!bird.hasScore()){
+				float score = 0;
+				float turns = 0;
+				for(int c2=0; c2<REPETITIONS; c2++){
+					Map test = testChallenger(bird);
+					score += scoreCanary(bird, test);
+					turns += test.getTurn();
+				}
+				score = score/REPETITIONS;
+				turns = turns/REPETITIONS;
+				bird.setScore(score);
+				bird.setAvgTime(turns);
+			}
+			else{
+				bird.setScore(bird.getScore()-bird.getScore()*SCORE_DEVALUING);
+			}
+		}
 		currentGen++;
+		sortPopulation();
+	}
+	
+	/** Processes an entire generation that has been evaluated */
+	private void genStep(){
+		breedFrom(ELITE);
+		spawnFrom(SPAWN, true);
 	}
 	
 	/** Evaluates the performance of the AI in the given map and sets score accordingly */
 	private float scoreCanary(BirdHouse bird, Map map){
 		int score = 0;
 		if(map.calcWinner().equals(Player.P0)){
-			score = 1000;
+			score = 5000;
 		}
 		else if(map.calcWinner().equals(Player.P1)){
 			score = 500;
@@ -117,6 +174,7 @@ public class CanaryBreeder {
 			foeUnits += map.getUnitContainer(unit).getHp();
 		}
 		score += ownUnits - foeUnits;
+		score -= map.getTurn();
 		return score;
 	}
 	
@@ -128,8 +186,15 @@ public class CanaryBreeder {
 			this.cScore[2]++;
 		}
 		else{
-			this.cScore[winner.getId()]++;
+			if(winner.getId()==0){
+				bird.setHasWon(bird.getHasWon()+1);
+				this.cScore[0]++;
+			}
+			else if(winner.getId()==1){
+				this.cScore[1]++;
+			}
 		}
+		bird.setHasPlayed(true);
 		return map;
 	}
 	
@@ -145,10 +210,12 @@ public class CanaryBreeder {
 			for(int c=0; c<ais.length; c++){
 				ais[c].process();
 				if(!map.calcWinner().equals(Player.NONE)){
+					map.setTurn(turns);
 					return map;
 				}
 			}
 		}
+		map.setTurn(TIME_OUT);
 		return map;
 	}
 	
@@ -157,16 +224,19 @@ public class CanaryBreeder {
 		for(int c=index; c<population.length; c++){
 			int mother = GameConstants.RANDOM.nextInt(index);
 			int father = GameConstants.RANDOM.nextInt(index);
-			Neurals neural = NeuralBreeder.breed(population[mother].getCanary().getNeurals(), population[father].getCanary().getNeurals());
+			Neurals neural = Crossover.breed(population[mother].getCanary().getNeurals(), population[father].getCanary().getNeurals());
 			BirdHouse bird = new BirdHouse(new BlueCanary(null, neural), Float.NEGATIVE_INFINITY, currentGen, nextFreeId++);
 			population[c] = bird;
 		}
 	}
 	
 	/** Adds completely new canaries to the population, starting at index */
-	private void spawnFrom(int index){
+	private void spawnFrom(int index, boolean breed){
 		for(int c=index; c<population.length; c++){
 			Neurals neural = new Neurals();
+			if(breed){
+				neural = Crossover.breed(population[GameConstants.RANDOM.nextInt(ELITE)].getCanary().getNeurals(),neural);
+			}
 			BirdHouse bird = new BirdHouse(new BlueCanary(null, neural), Float.NEGATIVE_INFINITY, currentGen, nextFreeId++);
 			population[c] = bird;
 		}
@@ -185,16 +255,35 @@ public class CanaryBreeder {
 		}
 	}
 	
+	/** Returns the bird with the best score who is from the latest generation */
+	public BirdHouse bestCurrentGenner(){
+		for(int c=0; c<population.length; c++){
+			if(population[c].getBirthGen()==currentGen-1){
+				return population[c];
+			}
+		}
+		return null;
+	}
+	
 	/** Inner class holding an individual */
-	@AllArgsConstructor @Data private class BirdHouse{
-		private BlueCanary canary;
-		private float score;
-		private int birthGen;
-		private int id;
+	@RequiredArgsConstructor @Data private class BirdHouse{
+		@NonNull private BlueCanary canary;
+		@NonNull private float score;
+		@NonNull private int birthGen;
+		@NonNull private int id;
+		private int hasWon = 0;
+		private boolean hasPlayed = false;
+		private float avgTime = Float.NEGATIVE_INFINITY;
 		/** Returns wether this bird has already scored */
 		public boolean hasScore(){
-			return score>-1000;
+			return score>=1000;
 		}
+	}
+	
+	/** Keeps track of values used for syso tracking */
+	@Data @AllArgsConstructor private class Tracker{
+		private BirdHouse topChicken;
+		private float topScore;
 	}
 	
 }

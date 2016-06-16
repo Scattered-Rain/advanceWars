@@ -126,7 +126,7 @@ public class Neurals {
 		for(int c=0; c<HIDDEN; c++){
 			out += hidden[c] * move[weightCounter];
 		}
-		return out;
+		return out/weightCounter;
 	}
 	
 	private float calcShoot(Point unit, List<RangeCluster> sweep, Point target){
@@ -148,7 +148,7 @@ public class Neurals {
 		for(int c=0; c<HIDDEN; c++){
 			out += hidden[c] * shoot[weightCounter];
 		}
-		return out;
+		return out/weightCounter;
 	}
 	
 	private float calcAttack(Point unit, List<RangeCluster> sweep, Point target, Point defender){
@@ -176,7 +176,7 @@ public class Neurals {
 		for(int c=0; c<HIDDEN; c++){
 			out += hidden[c] * attack[weightCounter];
 		}
-		return out;
+		return out/weightCounter;
 	}
 	
 	

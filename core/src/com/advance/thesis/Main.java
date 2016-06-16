@@ -38,21 +38,38 @@ public class Main extends ApplicationAdapter {
 	
 	private CanaryBreeder breeder;
 	
+	private List<Map> game;
+	private int gameStep;
+	
 	@Override public void create () {
-		this.breeder = new CanaryBreeder(TiledMapFactory.importMap(MapTiled.STRAT));
+		this.breeder = new CanaryBreeder(TiledMapFactory.importMap(MapTiled.DEFAULT));
 		Thread thread = new Thread(){
 			@Override public void run(){
 				breeder.process();
 			}
 		};
 		thread.start();
+		setGame();
 	}
 	
 	
 	@Override public void render(){
-		MapRenderer renderer = new MainRenderer(breeder.getWindow());
+		if(game.size()<=gameStep){
+			setGame();
+		}
+		//MapRenderer renderer = new MainRenderer(breeder.getWindow());
+		MapRenderer renderer = new MainRenderer(game.get(gameStep));
 		renderer.render();
 		renderer.dispose();
+		gameStep++;
+		try{
+			Thread.sleep(1000);
+		}catch(Exception ex){}
+	}
+	
+	private void setGame(){
+		this.game = breeder.getGame();
+		this.gameStep = 0;
 	}
 	
 }

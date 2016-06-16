@@ -1,5 +1,8 @@
 package com.advance.thesis.ai.blueCanary;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -20,7 +23,7 @@ import com.advance.thesis.util.Point;
 public class CanaryBreeder {
 	
 	/** Turns until time out is declared */
-	private static final int TIME_OUT = 100;
+	private static final int TIME_OUT = 25;
 	
 	/** How often a match is to be played */
 	private static final int REPETITIONS = 5;
@@ -37,6 +40,9 @@ public class CanaryBreeder {
 	
 	/** Map that can be used to gain a glance at the breeding */
 	@Getter private Map window;
+	
+	/** Contains an entire game that was played */
+	@Getter private List<Map> game;
 	
 	/** Tracker for syso purposes */
 	private Tracker tracker;
@@ -59,6 +65,8 @@ public class CanaryBreeder {
 	/** Constructs new Canary Breeder */
 	public CanaryBreeder(Map trainingMap){
 		this.window = new Map(1, 1);
+		this.game = new ArrayList<Map>();
+		this.game.add(window);
 		this.cScore = new int[]{0, 0, 0};
 		this.nextFreeId = 0;
 		this.currentGen = 0;
@@ -200,6 +208,7 @@ public class CanaryBreeder {
 	
 	/** Executes a single game between two AIs */
 	private Map game(AbstractAI p0, AbstractAI p1){
+		List<Map> game = new ArrayList<Map>();
 		Map map = trainingGrounds.clone();
 		this.window = map;
 		AbstractAI[] ais = new AbstractAI[]{p0, p1};
@@ -208,14 +217,16 @@ public class CanaryBreeder {
 		}
 		for(int turns=0; turns<TIME_OUT; turns++){
 			for(int c=0; c<ais.length; c++){
-				ais[c].process();
+				game.add(map.clone());
 				if(!map.calcWinner().equals(Player.NONE)){
 					map.setTurn(turns);
 					return map;
 				}
+				ais[c].process();
 			}
 		}
 		map.setTurn(TIME_OUT);
+		this.game = game;
 		return map;
 	}
 	
@@ -235,7 +246,7 @@ public class CanaryBreeder {
 		for(int c=index; c<population.length; c++){
 			Neurals neural = new Neurals();
 			if(breed){
-				neural = Crossover.breed(population[GameConstants.RANDOM.nextInt(ELITE)].getCanary().getNeurals(),neural);
+				neural = Crossover.breed(population[GameConstants.RANDOM.nextInt(ELITE)].getCanary().getNeurals(), Crossover.breed(population[GameConstants.RANDOM.nextInt(ELITE)].getCanary().getNeurals(),neural));
 			}
 			BirdHouse bird = new BirdHouse(new BlueCanary(null, neural), Float.NEGATIVE_INFINITY, currentGen, nextFreeId++);
 			population[c] = bird;

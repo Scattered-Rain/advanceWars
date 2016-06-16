@@ -19,6 +19,9 @@ public class CanaryBreeder {
 	/** Turns until time out is declared */
 	private static final int TIME_OUT = 100;
 	
+	/** How often a match is to be played */
+	private static final int REPETITIONS = 5;
+	
 	/** Size of the population */
 	private static final int POPULATION_SIZE = 16;
 	/** Size of the Elite */
@@ -33,7 +36,7 @@ public class CanaryBreeder {
 	@Getter private Map window;
 	
 	/** The map that all games are executed on */
-	private MapTiled trainingGrounds;
+	private Map trainingGrounds;
 	
 	/** The current Generation */
 	private int currentGen;
@@ -41,18 +44,18 @@ public class CanaryBreeder {
 	private int nextFreeId;
 	
 	/** Holds the scores of how often the canaries vs challenger have won [canary, challenger, draw] */
-	private int[] challengerScore;
+	private int[] cScore;
 	
 	/** The entire population of Canaries */
 	private BirdHouse[] population;
 	
 	/** Constructs new Canary Breeder */
-	public CanaryBreeder(){
+	public CanaryBreeder(Map trainingMap){
 		this.window = new Map(1, 1);
-		this.challengerScore = new int[]{0, 0, 0};
+		this.cScore = new int[]{0, 0, 0};
 		this.nextFreeId = 0;
 		this.currentGen = 0;
-		this.trainingGrounds = MapTiled.STRAT;
+		this.trainingGrounds = trainingMap;
 		this.population = new BirdHouse[POPULATION_SIZE];
 		spawnFrom(0);
 	}
@@ -60,13 +63,17 @@ public class CanaryBreeder {
 	/** Processes the generational loop */
 	public void process(){
 		BirdHouse topChicken = population[0];
+		float topScore = Float.NEGATIVE_INFINITY;
 		while(true){
 			genStep();
-			System.out.println("Gen: "+currentGen+" | Canary: "+challengerScore[0]+", Challenger: "+challengerScore[1]+", Draw: "+challengerScore[2]);
-			if(topChicken.getId()!=population[0].getId()){
+			System.out.println("Gen: "+currentGen+" | Canary: "+cScore[0]+" | Challenger: "+cScore[1]+" | Draw: "+cScore[2]+" | Ratio:  "+((float)cScore[0])/((float)cScore[1])+" | Top Elite: "+population[0].getScore()+" | Top Score: "+topScore);
+			if(topScore<population[0].getScore()){
 				topChicken = population[0];
+				topScore = topChicken.getScore();
+				System.out.println();
 				System.out.println("New Top Chicken!");
-				System.out.println(topChicken);
+				System.out.println(topChicken.getCanary().getNeurals());
+				System.out.println();
 			}
 		}
 	}
@@ -76,16 +83,24 @@ public class CanaryBreeder {
 		//Let's Game!
 		for(int c=0; c<population.length; c++){
 			BirdHouse bird = population[c];
-			scoreCanary(bird, testChallenger(bird));
+			if(!bird.hasScore()){
+				float score = 0;
+				for(int c2=0; c2<REPETITIONS; c2++){
+					score += scoreCanary(bird, testChallenger(bird));
+				}
+				score = score/REPETITIONS;
+				bird.setScore(score);
+			}
 		}
 		//let's Breed!
 		sortPopulation();
 		breedFrom(ELITE);
 		spawnFrom(SPAWN);
+		currentGen++;
 	}
 	
 	/** Evaluates the performance of the AI in the given map and sets score accordingly */
-	private void scoreCanary(BirdHouse bird, Map map){
+	private float scoreCanary(BirdHouse bird, Map map){
 		int score = 0;
 		if(map.calcWinner().equals(Player.P0)){
 			score = 1000;
@@ -102,7 +117,7 @@ public class CanaryBreeder {
 			foeUnits += map.getUnitContainer(unit).getHp();
 		}
 		score += ownUnits - foeUnits;
-		bird.setScore(score);
+		return score;
 	}
 	
 	/** Tests the given individual against the challenger AI */
@@ -110,17 +125,17 @@ public class CanaryBreeder {
 		Map map = game(bird.getCanary(), CHALLENGER);
 		Player winner = map.calcWinner();
 		if(winner.equals(Player.NONE)){
-			this.challengerScore[2]++;
+			this.cScore[2]++;
 		}
 		else{
-			this.challengerScore[winner.getId()]++;
+			this.cScore[winner.getId()]++;
 		}
 		return map;
 	}
 	
 	/** Executes a single game between two AIs */
 	private Map game(AbstractAI p0, AbstractAI p1){
-		Map map = TiledMapFactory.importMap(trainingGrounds);
+		Map map = trainingGrounds.clone();
 		this.window = map;
 		AbstractAI[] ais = new AbstractAI[]{p0, p1};
 		for(int c=0; c<ais.length; c++){
@@ -176,6 +191,10 @@ public class CanaryBreeder {
 		private float score;
 		private int birthGen;
 		private int id;
+		/** Returns wether this bird has already scored */
+		public boolean hasScore(){
+			return score>-1000;
+		}
 	}
 	
 }

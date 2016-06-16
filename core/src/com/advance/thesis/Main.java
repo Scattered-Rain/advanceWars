@@ -39,7 +39,7 @@ public class Main extends ApplicationAdapter {
 	private CanaryBreeder breeder;
 	
 	@Override public void create () {
-		this.breeder = new CanaryBreeder();
+		this.breeder = new CanaryBreeder(TiledMapFactory.importMap(MapTiled.STRAT));
 		Thread thread = new Thread(){
 			@Override public void run(){
 				breeder.process();

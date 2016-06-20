@@ -181,7 +181,8 @@ public class CanaryBreeder {
 		for(Point unit : map.getAllUnitsOfPlayer(Player.P1)){
 			foeUnits += map.getUnitContainer(unit).getHp();
 		}
-		score += ownUnits - foeUnits;
+		score -= foeUnits;
+		//score += ownUnits;
 		score -= map.getTurn();
 		return score;
 	}

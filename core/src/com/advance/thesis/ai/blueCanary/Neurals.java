@@ -18,7 +18,7 @@ public class Neurals {
 	/** Amount of Range Clusters in the input */
 	private static final int INPUTS = 23;
 	/** The amount of Neurons in the hidden layer */
-	private static final int HIDDEN = 10;
+	private static final int HIDDEN = 40;
 	
 	/** The range teh weights can possibly take */
 	public static final float[] WEIGHT_RANGE = new float[]{-1, 1};
